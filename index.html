@@ -117,9 +117,9 @@ tbody tr:last-child td{border-bottom:none}
   
   <nav class="tabs">
     <button class="tab active" data-tab="list">📋 Gate Entries (SAP)</button>
-    <button class="tab" data-tab="entry">➕ New Entry</button>
-    <button class="tab" data-tab="report">📊 Reports</button>
-    <button class="tab" data-tab="admin" id="adminTab" style="display:none">⚙️ Admin</button>
+    <button class="tab" data-tab="entry" id="nav-entry" style="display:none">➕ New Entry</button>
+    <button class="tab" data-tab="report" id="nav-report" style="display:none">📊 Reports</button>
+    <button class="tab" data-tab="admin" id="nav-admin" style="display:none">⚙️ Admin</button>
   </nav>
   
   <main>
@@ -132,14 +132,12 @@ tbody tr:last-child td{border-bottom:none}
             <label>Material (Part)</label>
             <select id="fPart" onchange="renderList()">
                 <option value="">All Materials</option>
-                <!-- Options loaded via JS -->
             </select>
           </div>
           <div>
             <label>Supplier (Vendor)</label>
             <select id="fVendor" onchange="renderList()">
                 <option value="">All Suppliers</option>
-                <!-- Options loaded via JS -->
             </select>
           </div>
           <div><label>From Date</label><input id="fFrom" type="date" onchange="renderList()"></div>
@@ -358,16 +356,26 @@ onAuthStateChanged(auth, async user => {
     $('whoami').innerHTML = `👤 <b>${esc(USER.name)}</b> <span class="badge" style="margin-left:6px">${esc(USER.role)}</span>`;
     $('btnLogin').style.display = 'none';
     $('btnLogout').style.display = 'inline-block';
-    $('adminTab').style.display = USER.role === 'Admin' ? '' : 'none';
+    
+    // SHOW restricted tabs if logged in
+    $('nav-entry').style.display = 'inline-block';
+    $('nav-report').style.display = 'inline-block';
+    $('nav-admin').style.display = USER.role === 'Admin' ? 'inline-block' : 'none';
+    
   } else {
     USER = null;
     $('whoami').innerHTML = `<span class="badge gray" style="background:#e2e8f0;color:#475569">Guest (View Only)</span>`;
     $('btnLogin').style.display = 'inline-block';
     $('btnLogout').style.display = 'none';
-    $('adminTab').style.display = 'none';
     
-    // अगर गेस्ट है और एडमिन टैब खुला है, तो उसे बंद करके लिस्ट पर भेज दें
-    if ($('tab-admin').classList.contains('active')) {
+    // HIDE restricted tabs if Guest
+    $('nav-entry').style.display = 'none';
+    $('nav-report').style.display = 'none';
+    $('nav-admin').style.display = 'none';
+    
+    // If current tab is a hidden one, kick them back to list view
+    const activeTab = document.querySelector('.tab.active');
+    if (activeTab && activeTab.dataset.tab !== 'list') {
         document.querySelector('[data-tab="list"]').click();
     }
   }
@@ -458,7 +466,7 @@ window.clearForm = clearForm;
 function makeEntryNo() { const d=new Date(); return `GE-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${Date.now().toString().slice(-6)}`; }
 
 async function saveEntry() {
-  if (!USER) { showLoginModal(); return; } // Block if not logged in
+  if (!USER) { showLoginModal(); return; }
   
   const msg=$('entryMsg'); msg.innerHTML='';
   const part=$('ePart').value.trim(), desc=$('eDesc').value.trim(), qty=parseInt($('eQty').value,10),
@@ -499,8 +507,8 @@ function getFilteredList() {
 
   return entriesCache.filter(e => {
     if (s && !`${e.entryNo} ${e.part} ${e.description} ${e.invoice} ${e.vendorCode} ${e.vendorName} ${e.creatorName}`.toLowerCase().includes(s)) return false;
-    if (p && e.part !== p) return false; // Exact match for dropdown
-    if (v && e.vendorCode !== v) return false; // Exact match for dropdown
+    if (p && e.part !== p) return false;
+    if (v && e.vendorCode !== v) return false;
     if (fromTs && e.createdAt < fromTs) return false;
     if (toTs && e.createdAt > toTs) return false;
     return true;
@@ -719,11 +727,8 @@ window.adminAddUser = adminAddUser;
 // ================= TABS =================
 document.querySelectorAll('.tab').forEach(btn => {
   btn.addEventListener('click', () => {
-    if (btn.dataset.tab === 'entry' && !USER) {
-        toast('Please login to add entries', 'error');
-        showLoginModal();
-        return;
-    }
+    if (btn.dataset.tab === 'entry' && !USER) { showLoginModal(); return; }
+    if (btn.dataset.tab === 'report' && !USER) { showLoginModal(); return; }
     if (btn.dataset.tab === 'admin' && (!USER || USER.role !== 'Admin')) return;
 
     document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
