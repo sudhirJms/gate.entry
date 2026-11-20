@@ -17,6 +17,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,9
 label{font-size:11.5px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}
 .muted{color:var(--muted)}.err{color:var(--red);font-size:12px;font-weight:600;margin-top:6px}
 .ok{color:var(--green);font-size:12px;font-weight:600;margin-top:6px}
+.warn{color:#d97706;font-size:12px;font-weight:600;margin-top:6px}
 
 /* SPINNER */
 #loadingOverlay{position:fixed;inset:0;background:rgba(255,255,255,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.3s}
@@ -94,7 +95,7 @@ tbody tr:last-child td{border-bottom:none}
 <!-- LOADING SPINNER -->
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <div style="margin-top:15px;font-weight:600;color:var(--blue)">Data Loading...</div>
+    <div style="margin-top:15px;font-weight:600;color:var(--blue)">Loading Data...</div>
 </div>
 
 <!-- LOGIN MODAL -->
@@ -102,8 +103,8 @@ tbody tr:last-child td{border-bottom:none}
   <div class="modal-card">
     <h3>Login Required</h3>
     <p>To add or delete entries, please login with your PIN.</p>
-    <label>User ID</label>
-    <input id="authUser" placeholder="e.g. admin" autocomplete="username" oninput="clearAuthError()" style="margin-bottom:14px">
+    <label>User ID / Email</label>
+    <input id="authUser" placeholder="e.g. admin or sudhir@company.com" autocomplete="username" oninput="clearAuthError()" style="margin-bottom:14px">
     
     <label>PIN</label>
     <div class="pin-wrap">
@@ -142,7 +143,7 @@ tbody tr:last-child td{border-bottom:none}
     <!-- SAP LIST VIEW -->
     <section id="tab-list" class="tabpane active">
       
-      <!-- RE-DESIGNED USER FRIENDLY FILTERS -->
+      <!-- FILTERS -->
       <div class="filterbar">
           <div class="f-group search">
             <label>🔍 Search</label>
@@ -370,11 +371,7 @@ window.closeModal = closeModal;
 // ================= AUTH & UI =================
 function togglePin() {
     const pinInput = $('authPin');
-    if (pinInput.type === 'password') {
-        pinInput.type = 'text';
-    } else {
-        pinInput.type = 'password';
-    }
+    pinInput.type = pinInput.type === 'password' ? 'text' : 'password';
 }
 window.togglePin = togglePin;
 
@@ -397,6 +394,7 @@ function startLockTimer(lockUntil) {
     clearInterval(lockTimer);
     $('btnSubmitLogin').disabled = true;
     $('btnSubmitLogin').style.opacity = '0.5';
+    $('btnSubmitLogin').textContent = 'Locked';
     
     lockTimer = setInterval(() => {
         const left = lockUntil - Date.now();
@@ -406,6 +404,7 @@ function startLockTimer(lockUntil) {
             $('authErr').textContent = '';
             $('btnSubmitLogin').disabled = false;
             $('btnSubmitLogin').style.opacity = '1';
+            $('btnSubmitLogin').textContent = 'Login';
         } else {
             const m = Math.floor(left / 60000);
             const s = Math.floor((left % 60000) / 1000);
@@ -420,37 +419,54 @@ async function login() {
   clearAuthError();
   
   if (!u || p.length < 6) { 
-      $('authErr').textContent='User ID और 6+ digit PIN दोनों चाहिए'; 
+      $('authErr').textContent='User ID/Email and 6+ digit PIN are required'; 
       return; 
   }
 
-  // Check lock status from DB
-  const attemptRef = ref(db, 'loginAttempts/' + u);
-  const attemptSnap = await get(attemptRef);
-  let attemptsData = attemptSnap.exists() ? attemptSnap.val() : { count: 0, lockUntil: 0 };
+  // 🔥 Firebase की (Key) में . नहीं हो सकता, इसलिए हम उसे _ में बदल रहे हैं
+  const safeKey = u.replace(/[.#$/\[\]]/g, '_');
 
-  if (attemptsData.lockUntil > Date.now()) {
-      startLockTimer(attemptsData.lockUntil);
-      return;
-  }
+  const btn = $('btnSubmitLogin');
+  btn.textContent = 'Checking...';
+  btn.disabled = true;
 
-  const email = u.includes('@') ? u : u + EMAIL_DOMAIN;
+  try {
+      // Check lock status from DB
+      const attemptRef = ref(db, 'loginAttempts/' + safeKey);
+      const attemptSnap = await get(attemptRef);
+      let attemptsData = attemptSnap.exists() ? attemptSnap.val() : { count: 0, lockUntil: 0 };
 
-  try { 
-      await signInWithEmailAndPassword(auth, email, p); 
-      await remove(attemptRef); // Success: Reset attempts
-      closeLoginModal();
-  } catch(e) { 
-      let newCount = (attemptsData.count || 0) + 1;
-      let lockUntil = 0;
-      
-      if (newCount >= 3) {
-          lockUntil = Date.now() + 10 * 60 * 1000; // 10 mins
-          await set(attemptRef, { count: 0, lockUntil: lockUntil });
-          startLockTimer(lockUntil);
-      } else {
-          $('authErr').innerHTML = `❌ गलत PIN। ${3 - newCount} कोशिशें बची हैं।`;
-          await set(attemptRef, { count: newCount, lockUntil: 0 });
+      if (attemptsData.lockUntil > Date.now()) {
+          startLockTimer(attemptsData.lockUntil);
+          return; 
+      }
+
+      const email = u.includes('@') ? u : u + EMAIL_DOMAIN;
+
+      try { 
+          await signInWithEmailAndPassword(auth, email, p); 
+          await remove(attemptRef); // Success: Reset attempts
+          closeLoginModal();
+      } catch(e) { 
+          let newCount = (attemptsData.count || 0) + 1;
+          let lockUntil = 0;
+          
+          if (newCount >= 3) {
+              lockUntil = Date.now() + 10 * 60 * 1000; // 10 mins
+              await set(attemptRef, { count: 0, lockUntil: lockUntil });
+              startLockTimer(lockUntil);
+          } else {
+              $('authErr').innerHTML = `❌ Wrong PIN. ${3 - newCount} attempts left.`;
+              await set(attemptRef, { count: newCount, lockUntil: 0 });
+          }
+      }
+  } catch(dbError) {
+      console.error(dbError);
+      $('authErr').textContent = 'Database connection error.';
+  } finally {
+      if (!$('btnSubmitLogin').disabled) {
+          btn.textContent = 'Login';
+          btn.disabled = false;
       }
   }
 }
@@ -560,7 +576,7 @@ $('ePart').addEventListener('input', () => {
     $('eDesc').value=PART_MAP[pn].desc; $('eDesc').readOnly=true;
     $('partMsg').innerHTML=`<div class="ok">✔ ${esc(PART_MAP[pn].fgname||'')}</div>`;
     if (PART_MAP[pn].vendorCode && !$('eVendorCode').value) { $('eVendorCode').value=PART_MAP[pn].vendorCode; $('eVendorName').value=PART_MAP[pn].vendorName||''; }
-  } else { $('eDesc').readOnly=false; $('partMsg').innerHTML='<div class="warn">⚠ Master में नहीं</div>'; }
+  } else { $('eDesc').readOnly=false; $('partMsg').innerHTML='<div class="warn">⚠ Not in Master</div>'; }
 });
 
 $('eVendorCode').addEventListener('input', () => {
@@ -586,17 +602,17 @@ async function saveEntry() {
         invoice=$('eInvoice').value.trim(), vCode=$('eVendorCode').value.trim(), remarks=$('eRemarks').value.trim();
   let vName=$('eVendorName').value.trim();
   
-  if (!part) return msg.innerHTML='<div class="err">❌ Part required</div>';
-  if (!desc) return msg.innerHTML='<div class="err">❌ Description required</div>';
-  if (!qty||qty<=0) return msg.innerHTML='<div class="err">❌ Qty > 0</div>';
-  if (!invoice) return msg.innerHTML='<div class="err">❌ Invoice required</div>';
-  if (!vCode) return msg.innerHTML='<div class="err">❌ Vendor Code required</div>';
+  if (!part) return msg.innerHTML='<div class="err">❌ Part is required</div>';
+  if (!desc) return msg.innerHTML='<div class="err">❌ Description is required</div>';
+  if (!qty||qty<=0) return msg.innerHTML='<div class="err">❌ Quantity must be > 0</div>';
+  if (!invoice) return msg.innerHTML='<div class="err">❌ Invoice is required</div>';
+  if (!vCode) return msg.innerHTML='<div class="err">❌ Vendor Code is required</div>';
   
   if (!vName && VENDOR_MAP[vCode]) vName = VENDOR_MAP[vCode];
-  if (!vName) { vName = prompt(`Vendor code "${vCode}" master में नहीं.\nVendor Name डालें:`)?.trim(); if(!vName) return; }
+  if (!vName) { vName = prompt(`Vendor code "${vCode}" not in master.\nEnter Vendor Name:`)?.trim(); if(!vName) return; }
 
   const dup = entriesCache.find(e => e.invoice===invoice && e.part===part && e.vendorCode===vCode);
-  if (dup) { const ok = await confirmModal('Duplicate', `Invoice ${invoice}+${part} पहले से है.\nफिर भी save?`, 'Save'); if(!ok) return; }
+  if (dup) { const ok = await confirmModal('Duplicate', `Invoice ${invoice}+${part} already exists.\nSave anyway?`, 'Save'); if(!ok) return; }
 
   const newRef = push(ref(db, 'entries'));
   try {
@@ -605,7 +621,7 @@ async function saveEntry() {
       createdAt: Date.now(), part, description: desc, qty, invoice,
       vendorCode: vCode, vendorName: vName, remarks
     });
-    msg.innerHTML = `<div class="ok">✔ Saved</div>`;
+    msg.innerHTML = `<div class="ok">✔ Saved successfully</div>`;
     toast('Entry saved ✔', 'success');
     clearForm();
   } catch(e) { msg.innerHTML = `<div class="err">❌ ${esc(e.message)}</div>`; }
@@ -649,7 +665,7 @@ function renderList() {
       <td>${esc(e.creatorName)}</td>
       <td>${canDel ? `<button class="btn-sm btn-danger" onclick="deleteEntry('${e.id}','${esc(e.entryNo)}','${esc(e.part)}',${e.qty},'${esc(e.invoice)}')">🗑</button>` : ''}</td>
     </tr>`;
-  }).join('') : `<tr><td colspan="12" class="empty">कोई एंट्री नहीं मिली</td></tr>`;
+  }).join('') : `<tr><td colspan="12" class="empty">No entries found</td></tr>`;
 }
 window.renderList = renderList;
 
@@ -805,9 +821,9 @@ async function adminAddUser() {
   const name = $('nuName').value.trim() || uid;
   const role = $('nuRole').value;
   const msg = $('userMsg'); msg.innerHTML='';
-  if (!uid || pin.length < 6) { msg.innerHTML='<div class="err">User ID और 6+ PIN चाहिए</div>'; return; }
+  if (!uid || pin.length < 6) { msg.innerHTML='<div class="err">User ID and 6+ PIN required</div>'; return; }
   if (Object.values(usersCache).some(u => (u.userId||'').toLowerCase() === uid)) { msg.innerHTML='<div class="err">User ID already exists</div>'; return; }
-  const adminPass = prompt('Confirm करने के लिए अपना PIN डालें:');
+  const adminPass = prompt('Confirm your PIN to create user:');
   if (!adminPass) return;
   const adminEmail = auth.currentUser.email;
   try {
