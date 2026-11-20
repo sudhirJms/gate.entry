@@ -3,76 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gate Entry – Store</title>
+<title>Gate Entry – Store (SAP Style)</title>
 <style>
 :root{--blue:#2563eb;--green:#16a34a;--red:#dc2626;--slate:#1e293b;--muted:#64748b;--line:#e2e8f0;--bg:#eef2f7}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--slate);font-size:14px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--slate);font-size:13px}
 .hidden{display:none!important}
-button{font-family:inherit;cursor:pointer;border:none;border-radius:8px;font-size:13px;font-weight:600;transition:.15s}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:6px;font-size:12px;font-weight:600;transition:.15s}
 button:active{transform:scale(.98)}
-input,select{font-family:inherit;font-size:13px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;outline:none;background:#fff;width:100%;color:var(--slate)}
+input,select{font-family:inherit;font-size:12px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;outline:none;background:#fff;width:100%;color:var(--slate)}
 input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 input[readonly]{background:#f8fafc;color:var(--muted)}
-label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}
-.muted{color:var(--muted)}.err{color:var(--red);font-size:12px;font-weight:600;margin-top:6px}
-.ok{color:var(--green);font-size:12px;font-weight:600;margin-top:6px}
-.warn{color:#d97706;font-size:12px;font-weight:600;margin-top:6px}
+label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.03em}
+.muted{color:var(--muted)}.err{color:var(--red);font-size:12px;font-weight:600;margin-top:4px}
+.ok{color:var(--green);font-size:12px;font-weight:600;margin-top:4px}
+.warn{color:#d97706;font-size:12px;font-weight:600;margin-top:4px}
+
+/* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e3a8a,#2563eb 60%,#0ea5e9);padding:20px}
 .login-card{background:#fff;padding:36px 32px;border-radius:18px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
 .login-card h1{font-size:22px;margin-bottom:4px}
 .login-card .sub{font-size:13px;color:var(--muted);margin-bottom:24px}
 .login-card label{margin-top:14px}
-.btn-primary{background:var(--blue);color:#fff;padding:11px 18px}.btn-primary:hover{background:#1d4ed8}
+.btn-primary{background:var(--blue);color:#fff;padding:10px 16px}.btn-primary:hover{background:#1d4ed8}
 .login-card .btn-primary{width:100%;margin-top:22px;padding:12px;font-size:14px}
 .hint{margin-top:18px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6}
-.topbar{background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(30,58,138,.25)}
+
+/* SHELL */
+.topbar{background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(30,58,138,.25)}
 .brand{font-size:16px;font-weight:700;display:flex;align-items:center;gap:9px}
 .brand span{background:rgba(255,255,255,.18);padding:3px 9px;border-radius:20px;font-size:11px}
 .userbox{display:flex;align-items:center;gap:12px;font-size:13px}
-.btn-sm{padding:7px 13px;font-size:12px}
+.btn-sm{padding:6px 12px;font-size:12px}
 .ghost{background:rgba(255,255,255,.16);color:#fff}.ghost:hover{background:rgba(255,255,255,.28)}
-.tabs{display:flex;gap:4px;background:#fff;padding:0 16px;border-bottom:1px solid var(--line);position:sticky;top:58px;z-index:40;overflow-x:auto}
+.tabs{display:flex;gap:4px;background:#fff;padding:0 16px;border-bottom:1px solid var(--line);position:sticky;top:54px;z-index:40;overflow-x:auto}
 .tab{background:transparent;color:var(--muted);padding:14px 16px;border-radius:0;border-bottom:3px solid transparent;white-space:nowrap;font-size:13.5px}
 .tab:hover{color:var(--blue)}.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
-main{padding:20px;max-width:1500px;margin:0 auto}
+main{padding:16px;max-width:1600px;margin:0 auto}
 .tabpane{display:none}.tabpane.active{display:block}
-.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
-.card h2{font-size:15px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+.card h2{font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:#1e293b}
 .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue)}
-.grid{display:grid;gap:14px}
-.g3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
-.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
-.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;border-left:4px solid var(--blue)}
-.stat .lbl{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase}
-.stat .val{font-size:26px;font-weight:800;margin-top:6px}
-.stat.green{border-left-color:var(--green)}.stat.green .val{color:var(--green)}
-.stat.orange{border-left-color:#f59e0b}.stat.orange .val{color:#d97706}
-.stat.purple{border-left-color:#8b5cf6}.stat.purple .val{color:#7c3aed}
-.btn{background:var(--blue);color:#fff;padding:11px 20px}.btn:hover{background:#1d4ed8}
+.grid{display:grid;gap:12px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+
+/* BUTTONS */
+.btn{background:var(--blue);color:#fff;padding:9px 16px}.btn:hover{background:#1d4ed8}
 .btn-green{background:var(--green)}.btn-green:hover{background:#15803d}
 .btn-danger{background:var(--red)}.btn-danger:hover{background:#b91c1c}
 .btn-ghost{background:#f1f5f9;color:var(--slate)}.btn-ghost:hover{background:#e2e8f0}
 .btn-outline{background:#fff;color:var(--slate);border:1px solid var(--line)}.btn-outline:hover{background:#f8fafc}
-.table-wrap{max-height:65vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
-thead th{position:sticky;top:0;background:#f1f5f9;z-index:2;text-align:left;padding:11px 12px;font-size:11px;text-transform:uppercase;color:#475569;font-weight:700;border-bottom:1px solid var(--line);white-space:nowrap}
-tbody td{padding:10px 12px;border-bottom:1px solid #f1f5f9;white-space:nowrap}
-tbody tr:hover{background:#f8fafc}tbody tr:last-child td{border-bottom:none}
-.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-.empty{padding:44px 20px;text-align:center;color:var(--muted);font-size:13px}
-.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#dbeafe;color:#1d4ed8}
-.badge.gray{background:#f1f5f9;color:#475569}
-.badge.red{background:#fee2e2;color:#b91c1c}
-.filterbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;align-items:end;margin-bottom:16px}
-.filterbar .btn{height:40px}
+
+/* SAP TABLE STYLE */
+.table-wrap{border:1px solid #cbd5e1;border-radius:4px;background:#fff;overflow-x:auto;overflow-y:auto;max-height:70vh}
+table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+thead th{position:sticky;top:0;background:#f1f5f9;z-index:2;text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;color:#334155;font-weight:700;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0}
+tbody td{padding:8px 10px;border-bottom:1px solid #e2e8f0;border-right:1px solid #f1f5f9;color:#1e293b}
+tbody tr:nth-child(even){background:#f8fafc}
+tbody tr:hover{background:#e0f2fe}
+tbody tr:last-child td{border-bottom:none}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.empty{padding:30px;text-align:center;color:var(--muted);font-size:13px}
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
+.badge.red{background:#fee2e2;color:#b91c1c;border-color:#fecaca}
+
+/* FILTER BAR */
+.filterbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;align-items:end;margin-bottom:14px;background:#f8fafc;padding:12px;border-radius:8px;border:1px solid var(--line)}
+.filterbar .btn{height:34px;padding:0 12px}
+.filterbar label{font-size:10.5px}
+
+/* MODAL & TOAST */
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
-.modal-card{background:#fff;border-radius:14px;padding:26px;width:100%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.modal-card{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
 .modal-card h3{font-size:16px;margin-bottom:10px}
-.modal-card p{font-size:13.5px;color:var(--muted);line-height:1.6}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
-#toast{position:fixed;top:74px;right:22px;z-index:300;display:flex;flex-direction:column;gap:8px}
-.toast-item{background:#0f172a;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.modal-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+#toast{position:fixed;top:70px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px}
+.toast-item{background:#0f172a;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .toast-item.success{background:#15803d}.toast-item.error{background:#b91c1c}
 </style>
 </head>
@@ -82,9 +90,9 @@ tbody tr:hover{background:#f8fafc}tbody tr:last-child td{border-bottom:none}
 <div id="loginScreen" class="login-wrap">
   <div class="login-card">
     <h1>🚚 Gate Entry</h1>
-    <div class="sub">Store Department – PIN Login</div>
+    <div class="sub">Store Department – SAP Style</div>
     <label>User ID / Email</label>
-    <input id="authUser" placeholder="e.g. admin या sudhir.zf@gmail.com" autocomplete="username">
+    <input id="authUser" placeholder="e.g. admin" autocomplete="username">
     <label>PIN (min 6 digits)</label>
     <input id="authPin" type="password" inputmode="numeric" placeholder="••••••" autocomplete="current-password">
     <div id="authErr" class="err"></div>
@@ -101,83 +109,112 @@ tbody tr:hover{background:#f8fafc}tbody tr:last-child td{border-bottom:none}
   </header>
   <nav class="tabs">
     <button class="tab active" data-tab="entry">➕ New Entry</button>
-    <button class="tab" data-tab="list">📋 Entries</button>
+    <button class="tab" data-tab="list">📋 Gate Entries (SAP View)</button>
     <button class="tab" data-tab="report">📊 Reports</button>
-    <button class="tab" data-tab="master">🗂️ Master</button>
     <button class="tab" data-tab="admin" id="adminTab" style="display:none">⚙️ Admin</button>
   </nav>
   <main>
-    <!-- ENTRY -->
+    <!-- ENTRY FORM -->
     <section id="tab-entry" class="tabpane active">
       <div class="card">
-        <h2><span class="dot"></span>Gate Entry – Material Inward</h2>
+        <h2><span class="dot"></span>Material Inward – New Entry</h2>
         <div class="grid g3">
           <div><label>Part Number *</label><input id="ePart" list="dlParts" placeholder="Type / select" autocomplete="off"><datalist id="dlParts"></datalist><div id="partMsg"></div></div>
           <div><label>Description *</label><input id="eDesc" placeholder="Auto-fill"></div>
           <div><label>Quantity *</label><input id="eQty" type="number" min="1" step="1" placeholder="0"></div>
           <div><label>Invoice No *</label><input id="eInvoice" placeholder="INV-..."></div>
           <div><label>Vendor Code *</label><input id="eVendorCode" list="dlVendors" placeholder="Type / select" autocomplete="off"><datalist id="dlVendors"></datalist></div>
-          <div><label>Vendor Name</label><input id="eVendorName" placeholder="Auto-fill"></div>
+          <div><label>Vendor Name</label><input id="eVendorName" placeholder="Auto-fill / Type manually"></div>
         </div>
-        <div style="margin-top:14px"><label>Remarks</label><input id="eRemarks" placeholder="Optional"></div>
+        <div style="margin-top:12px"><label>Remarks</label><input id="eRemarks" placeholder="Optional"></div>
         <div id="entryMsg"></div>
-        <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
-          <button class="btn btn-green" onclick="saveEntry()">✔ Save</button>
-          <button class="btn btn-ghost" onclick="clearForm()">✖ Clear</button>
+        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+          <button class="btn btn-green" onclick="saveEntry()">✔ Save Gate Entry</button>
+          <button class="btn btn-ghost" onclick="clearForm()">✖ Clear Form</button>
         </div>
-      </div>
-      <div class="card">
-        <h2><span class="dot" style="background:#16a34a"></span>Today's Entries</h2>
-        <div class="table-wrap" style="max-height:42vh"><table><thead><tr><th>Entry No</th><th>Time</th><th>Part</th><th>Desc</th><th class="num">Qty</th><th>Invoice</th><th>Vendor</th><th>By</th></tr></thead><tbody id="todayBody"></tbody></table></div>
       </div>
     </section>
 
-    <!-- LIST -->
+    <!-- SAP LIST VIEW -->
     <section id="tab-list" class="tabpane">
-      <div class="card">
-        <h2><span class="dot"></span>All Gate Entries</h2>
+      <div class="card" style="padding:12px">
         <div class="filterbar">
-          <div><label>Search</label><input id="fSearch" placeholder="Any text" oninput="renderList()"></div>
+          <div><label>Search Text</label><input id="fSearch" placeholder="Part/Inv/Vendor..." oninput="renderList()"></div>
           <div><label>Part No</label><input id="fPart" list="dlParts" oninput="renderList()" autocomplete="off"></div>
           <div><label>Vendor Code</label><input id="fVendor" list="dlVendors" oninput="renderList()" autocomplete="off"></div>
-          <div><label>From</label><input id="fFrom" type="date" onchange="renderList()"></div>
-          <div><label>To</label><input id="fTo" type="date" onchange="renderList()"></div>
+          <div><label>From Date</label><input id="fFrom" type="date" onchange="renderList()"></div>
+          <div><label>From Time</label><input id="fFromTime" type="time" onchange="renderList()"></div>
+          <div><label>To Date</label><input id="fTo" type="date" onchange="renderList()"></div>
+          <div><label>To Time</label><input id="fToTime" type="time" onchange="renderList()"></div>
           <button class="btn btn-ghost" onclick="resetListFilters()">↺ Reset</button>
-          <button class="btn btn-outline" onclick="exportEntries()">⬇ CSV</button>
+          <button class="btn btn-outline" onclick="exportEntries()">⬇ Export</button>
         </div>
-        <div class="muted" id="listCount" style="font-size:12.5px;font-weight:600;margin-bottom:10px"></div>
-        <div class="table-wrap"><table><thead><tr><th>#</th><th>Entry No</th><th>Date &amp; Time</th><th>Part</th><th>Desc</th><th class="num">Qty</th><th>Invoice</th><th>Vendor</th><th>By</th><th>Action</th></tr></thead><tbody id="listBody"></tbody></table></div>
+      </div>
+      
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:10px 14px;background:#f8fafc;border-bottom:1px solid var(--line);display:flex;justify-content:space-between">
+            <span class="muted" style="font-weight:600" id="listCount"></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Entry No</th><th>Date</th><th>Time</th><th>Part No</th><th>Description</th>
+                <th class="num">Qty</th><th>Invoice</th><th>Vendor Code</th><th>Vendor Name</th><th>Entered By</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="listBody"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <!-- REPORT -->
+    <!-- REPORTS -->
     <section id="tab-report" class="tabpane">
-      <div class="card">
-        <h2><span class="dot"></span>Filters</h2>
+      <div class="card" style="padding:12px">
         <div class="filterbar">
           <div><label>Part No</label><input id="rPart" list="dlParts" oninput="renderReport()" autocomplete="off"></div>
           <div><label>Vendor Code</label><input id="rVendor" list="dlVendors" oninput="renderReport()" autocomplete="off"></div>
-          <div><label>From</label><input id="rFrom" type="date" onchange="renderReport()"></div>
-          <div><label>To</label><input id="rTo" type="date" onchange="renderReport()"></div>
-          <div><label>User</label><select id="rUser" onchange="renderReport()"><option value="">All</option></select></div>
+          <div><label>From Date</label><input id="rFrom" type="date" onchange="renderReport()"></div>
+          <div><label>From Time</label><input id="rFromTime" type="time" onchange="renderReport()"></div>
+          <div><label>To Date</label><input id="rTo" type="date" onchange="renderReport()"></div>
+          <div><label>To Time</label><input id="rToTime" type="time" onchange="renderReport()"></div>
+          <div><label>Entered By</label><select id="rUser" onchange="renderReport()"><option value="">All</option></select></div>
           <button class="btn btn-ghost" onclick="resetReportFilters()">↺ Reset</button>
-          <button class="btn btn-outline" onclick="exportReport()">⬇ CSV</button>
+          <button class="btn btn-outline" onclick="exportReport()">⬇ Export</button>
         </div>
       </div>
-      <div class="grid g4" id="reportStats" style="margin-bottom:18px"></div>
-      <div class="card"><h2><span class="dot"></span>By Part</h2><div class="table-wrap" style="max-height:40vh"><table><thead><tr><th>Part</th><th>Desc</th><th class="num">Qty</th><th class="num">Entries</th></tr></thead><tbody id="repPartBody"></tbody></table></div></div>
-      <div class="card"><h2><span class="dot" style="background:#8b5cf6"></span>By Vendor</h2><div class="table-wrap" style="max-height:40vh"><table><thead><tr><th>Code</th><th>Name</th><th class="num">Qty</th><th class="num">Entries</th></tr></thead><tbody id="repVendorBody"></tbody></table></div></div>
-      <div class="card"><h2><span class="dot" style="background:#16a34a"></span>By Date</h2><div class="table-wrap" style="max-height:40vh"><table><thead><tr><th>Date</th><th class="num">Qty</th><th class="num">Entries</th></tr></thead><tbody id="repDateBody"></tbody></table></div></div>
-      <div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Detail</h2><div class="table-wrap" style="max-height:45vh"><table><thead><tr><th>Entry No</th><th>Date &amp; Time</th><th>Part</th><th>Desc</th><th class="num">Qty</th><th>Invoice</th><th>Vendor</th><th>By</th></tr></thead><tbody id="repDetailBody"></tbody></table></div></div>
-      <div class="card"><h2><span class="dot" style="background:#dc2626"></span>Delete Audit Log</h2><div class="table-wrap" style="max-height:35vh"><table><thead><tr><th>When</th><th>Entry No</th><th>Part</th><th class="num">Qty</th><th>Invoice</th><th>Deleted By</th></tr></thead><tbody id="auditBody"></tbody></table></div></div>
-    </section>
+      
+      <!-- Summary Tables -->
+      <div class="grid g4" id="reportStats" style="margin-bottom:16px"></div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <div class="card" style="padding:0;overflow:hidden">
+            <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">By Part Number</h2>
+            <div class="table-wrap" style="max-height:300px;border:none;border-radius:0">
+                <table><thead><tr><th>Part No</th><th>Desc</th><th class="num">Qty</th><th class="num">Count</th></tr></thead><tbody id="repPartBody"></tbody></table>
+            </div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden">
+            <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">By Vendor</h2>
+            <div class="table-wrap" style="max-height:300px;border:none;border-radius:0">
+                <table><thead><tr><th>Code</th><th>Name</th><th class="num">Qty</th><th class="num">Count</th></tr></thead><tbody id="repVendorBody"></tbody></table>
+            </div>
+          </div>
+      </div>
 
-    <!-- MASTER -->
-    <section id="tab-master" class="tabpane">
-      <div class="card">
-        <h2><span class="dot"></span>Part Master (CSV)</h2>
-        <input id="mSearch" placeholder="🔍 Search..." oninput="renderMaster()" style="margin-bottom:14px">
-        <div class="table-wrap" style="max-height:60vh"><table><thead><tr><th>Part</th><th>Desc</th><th>FG</th><th>FG Name</th><th>BOM</th><th>Vendor Code</th><th>Vendor Name</th></tr></thead><tbody id="masterBody"></tbody></table></div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+        <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">By Date</h2>
+        <div class="table-wrap" style="max-height:250px;border:none;border-radius:0">
+            <table><thead><tr><th>Date</th><th class="num">Qty</th><th class="num">Count</th></tr></thead><tbody id="repDateBody"></tbody></table>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">Audit Log (Deleted Entries)</h2>
+        <div class="table-wrap" style="max-height:250px;border:none;border-radius:0">
+            <table><thead><tr><th>When</th><th>Entry No</th><th>Part</th><th class="num">Qty</th><th>Invoice</th><th>Deleted By</th></tr></thead><tbody id="auditBody"></tbody></table>
+        </div>
       </div>
     </section>
 
@@ -192,11 +229,13 @@ tbody tr:hover{background:#f8fafc}tbody tr:last-child td{border-bottom:none}
           <div><label>Role</label><select id="nuRole"><option>Store</option><option>Admin</option></select></div>
         </div>
         <div id="userMsg"></div>
-        <button class="btn" style="margin-top:14px" onclick="adminAddUser()">➕ Add User</button>
+        <button class="btn" style="margin-top:12px" onclick="adminAddUser()">➕ Add User</button>
       </div>
-      <div class="card">
-        <h2><span class="dot" style="background:#8b5cf6"></span>All Users</h2>
-        <div class="table-wrap" style="max-height:40vh"><table><thead><tr><th>User ID</th><th>Name</th><th>Role</th></tr></thead><tbody id="userListBody"></tbody></table></div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">All Users</h2>
+        <div class="table-wrap" style="border:none;border-radius:0">
+            <table><thead><tr><th>User ID</th><th>Name</th><th>Role</th></tr></thead><tbody id="userListBody"></tbody></table>
+        </div>
       </div>
     </section>
   </main>
@@ -206,7 +245,7 @@ tbody tr:hover{background:#f8fafc}tbody tr:last-child td{border-bottom:none}
 <div id="toast"></div>
 
 <script type="module">
-// ================= CONFIG (अपनी values यहाँ डालें) =================
+// ================= CONFIG =================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
          createUserWithEmailAndPassword, updateProfile }
@@ -227,10 +266,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
-const EMAIL_DOMAIN = "@gate.local";   // internal only — कोई email नहीं भेजा जाता
+const EMAIL_DOMAIN = "@gate.local";
 
 // ================= STATE =================
-let USER = null;          // {uid, name, role, userId}
+let USER = null;
 let PART_MAP = {}, VENDOR_MAP = {}, MASTER_ALL = [];
 let entriesCache = [], auditCache = [], usersCache = {};
 
@@ -240,7 +279,18 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const pad = n => String(n).padStart(2, '0');
 const fmtDT = ts => { const d = new Date(ts); return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; };
 const fmtDate = ts => { const d = new Date(ts); return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`; };
-const dateKey = ts => { const d = new Date(ts); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+const fmtTime = ts => { const d = new Date(ts); return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; };
+
+// Start Time (00:00 if no time provided)
+function getStartTs(dateStr, timeStr) {
+    if (!dateStr) return null;
+    return new Date(`${dateStr}T${timeStr || '00:00'}:00`).getTime();
+}
+// End Time (23:59:59 if no time provided)
+function getEndTs(dateStr, timeStr) {
+    if (!dateStr) return null;
+    return new Date(`${dateStr}T${timeStr || '23:59'}:59`).getTime();
+}
 
 function toast(m, t='') { const e = document.createElement('div'); e.className='toast-item '+t; e.textContent=m; $('toast').appendChild(e); setTimeout(()=>{e.style.opacity=0;e.style.transition='.3s';setTimeout(()=>e.remove(),300)},2600); }
 
@@ -265,17 +315,10 @@ async function login() {
     return; 
   }
   
-  // यहाँ फिक्स है: अगर यूजर ईमेल नहीं डालता (जैसे सिर्फ admin), तो @gate.local जुड़ेगा
-  if (!u.includes('@')) {
-    u = u + EMAIL_DOMAIN;
-  }
+  if (!u.includes('@')) u = u + EMAIL_DOMAIN;
   
-  try { 
-    await signInWithEmailAndPassword(auth, u, p); 
-  }
-  catch(e) { 
-    $('authErr').textContent='गलत User ID/Email या PIN'; 
-  }
+  try { await signInWithEmailAndPassword(auth, u, p); }
+  catch(e) { $('authErr').textContent='गलत User ID/Email या PIN'; }
 }
 
 async function logout() { await signOut(auth); }
@@ -283,7 +326,6 @@ async function logout() { await signOut(auth); }
 async function loadProfile(uid) {
   const snap = await get(ref(db, 'userProfiles/' + uid));
   if (snap.exists()) return snap.val();
-  // पहली बार — auto-create Store profile
   const userId = (auth.currentUser.email || '').split('@')[0];
   const prof = { name: userId, role: 'Store', userId };
   await set(ref(db, 'userProfiles/' + uid), prof);
@@ -296,14 +338,14 @@ onAuthStateChanged(auth, async user => {
   USER = { uid: user.uid, ...prof };
   $('loginScreen').classList.add('hidden');
   $('app').classList.remove('hidden');
-  $('whoami').innerHTML = `👤 <b>${esc(USER.name)}</b> <span class="badge ${USER.role==='Admin'?'':'gray'}" style="margin-left:6px">${esc(USER.role)}</span>`;
+  $('whoami').innerHTML = `👤 <b>${esc(USER.name)}</b> <span class="badge" style="margin-left:6px">${esc(USER.role)}</span>`;
   $('adminTab').style.display = USER.role === 'Admin' ? '' : 'none';
 
   await loadMaster();
   attachRealtimeListeners();
 });
 
-// ================= MASTER CSV =================
+// ================= MASTER CSV (Background Load only) =================
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/).filter(l => l.trim() !== '');
   const headers = lines[0].split(',').map(h => h.trim());
@@ -332,7 +374,7 @@ function attachRealtimeListeners() {
     entriesCache = [];
     snap.forEach(c => { entriesCache.push({ id: c.key, ...c.val() }); });
     entriesCache.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-    renderToday(); renderList(); renderReport(); fillReportUserDropdown();
+    renderList(); renderReport(); fillReportUserDropdown();
   });
   onValue(ref(db, 'auditLog'), snap => {
     auditCache = [];
@@ -354,12 +396,13 @@ $('ePart').addEventListener('input', () => {
     $('eDesc').value=PART_MAP[pn].desc; $('eDesc').readOnly=true;
     $('partMsg').innerHTML=`<div class="ok">✔ ${esc(PART_MAP[pn].fgname||'')}</div>`;
     if (PART_MAP[pn].vendorCode && !$('eVendorCode').value) { $('eVendorCode').value=PART_MAP[pn].vendorCode; $('eVendorName').value=PART_MAP[pn].vendorName||''; }
-  } else { $('eDesc').readOnly=false; $('partMsg').innerHTML='<div class="warn">⚠ Master में नहीं — description हाथ से लिखें</div>'; }
+  } else { $('eDesc').readOnly=false; $('partMsg').innerHTML='<div class="warn">⚠ Master में नहीं</div>'; }
 });
+
 $('eVendorCode').addEventListener('input', () => {
   const vc = $('eVendorCode').value.trim();
   if (VENDOR_MAP[vc]) $('eVendorName').value = VENDOR_MAP[vc];
-  else if (!vc) $('eVendorName').value='';
+  else $('eVendorName').value = '';
 });
 
 function clearForm() {
@@ -401,27 +444,22 @@ async function saveEntry() {
 }
 window.saveEntry = saveEntry;
 
-// ================= RENDER TODAY =================
-function renderToday() {
-  const today = dateKey(Date.now());
-  const rows = entriesCache.filter(e => dateKey(e.createdAt) === today);
-  $('todayBody').innerHTML = rows.length ? rows.map(e => `<tr>
-    <td><span class="badge">${esc(e.entryNo)}</span></td><td>${fmtDT(e.createdAt)}</td>
-    <td><b>${esc(e.part)}</b></td><td>${esc(e.description)}</td><td class="num">${e.qty}</td>
-    <td>${esc(e.invoice)}</td><td>${esc(e.vendorCode)}–${esc(e.vendorName)}</td><td>${esc(e.creatorName)}</td>
-  </tr>`).join('') : `<tr><td colspan="8" class="empty">आज कोई entry नहीं</td></tr>`;
-}
-
-// ================= RENDER LIST =================
+// ================= RENDER LIST (SAP STYLE) =================
 function getFilteredList() {
   const s=$('fSearch').value.trim().toLowerCase(), p=$('fPart').value.trim().toLowerCase(),
-        v=$('fVendor').value.trim().toLowerCase(), f=$('fFrom').value, t=$('fTo').value;
+        v=$('fVendor').value.trim().toLowerCase();
+        
+  const fromTs = getStartTs($('fFrom').value, $('fFromTime').value);
+  const toTs = getEndTs($('fTo').value, $('fToTime').value);
+
   return entriesCache.filter(e => {
     if (s && !`${e.entryNo} ${e.part} ${e.description} ${e.invoice} ${e.vendorCode} ${e.vendorName} ${e.creatorName}`.toLowerCase().includes(s)) return false;
     if (p && !e.part.toLowerCase().includes(p)) return false;
     if (v && !`${e.vendorCode} ${e.vendorName}`.toLowerCase().includes(v)) return false;
-    if (f && dateKey(e.createdAt) < f) return false;
-    if (t && dateKey(e.createdAt) > t) return false;
+    
+    if (fromTs && e.createdAt < fromTs) return false;
+    if (toTs && e.createdAt > toTs) return false;
+    
     return true;
   });
 }
@@ -429,20 +467,32 @@ function getFilteredList() {
 function renderList() {
   const rows = getFilteredList();
   const total = rows.reduce((s,e)=>s+e.qty,0);
-  $('listCount').innerHTML = `Showing <b>${rows.length}</b> | Total Qty: <b>${total}</b>`;
+  $('listCount').innerHTML = `Showing <b>${rows.length}</b> entries &nbsp;|&nbsp; Total Qty: <b>${total}</b>`;
+  
   $('listBody').innerHTML = rows.length ? rows.map((e,i) => {
     const canDel = e.creatorUid === USER.uid;
     return `<tr>
-      <td>${i+1}</td><td><span class="badge">${esc(e.entryNo)}</span></td><td>${fmtDT(e.createdAt)}</td>
-      <td><b>${esc(e.part)}</b></td><td>${esc(e.description)}</td><td class="num">${e.qty}</td>
-      <td>${esc(e.invoice)}</td><td>${esc(e.vendorCode)}</td><td>${esc(e.creatorName)}</td>
+      <td>${i+1}</td>
+      <td><span class="badge">${esc(e.entryNo)}</span></td>
+      <td>${fmtDate(e.createdAt)}</td>
+      <td>${fmtTime(e.createdAt)}</td>
+      <td><b>${esc(e.part)}</b></td>
+      <td>${esc(e.description)}</td>
+      <td class="num">${e.qty}</td>
+      <td>${esc(e.invoice)}</td>
+      <td>${esc(e.vendorCode)}</td>
+      <td>${esc(e.vendorName)}</td>
+      <td>${esc(e.creatorName)}</td>
       <td>${canDel ? `<button class="btn-sm btn-danger" onclick="deleteEntry('${e.id}','${esc(e.entryNo)}','${esc(e.part)}',${e.qty},'${esc(e.invoice)}')">🗑 Delete</button>` : '<span class="muted" style="font-size:11px">—</span>'}</td>
     </tr>`;
-  }).join('') : `<tr><td colspan="10" class="empty">कोई entry नहीं</td></tr>`;
+  }).join('') : `<tr><td colspan="12" class="empty">कोई एंट्री नहीं मिली</td></tr>`;
 }
 window.renderList = renderList;
 
-function resetListFilters() { ['fSearch','fPart','fVendor','fFrom','fTo'].forEach(id=>$(id).value=''); renderList(); }
+function resetListFilters() { 
+    ['fSearch','fPart','fVendor','fFrom','fFromTime','fTo','fToTime'].forEach(id=>$(id).value=''); 
+    renderList(); 
+}
 window.resetListFilters = resetListFilters;
 
 // ================= DELETE =================
@@ -469,13 +519,19 @@ function fillReportUserDropdown() {
 
 function getReportRows() {
   const p=$('rPart').value.trim().toLowerCase(), v=$('rVendor').value.trim().toLowerCase(),
-        f=$('rFrom').value, t=$('rTo').value, u=$('rUser').value;
+        u=$('rUser').value;
+        
+  const fromTs = getStartTs($('rFrom').value, $('rFromTime').value);
+  const toTs = getEndTs($('rTo').value, $('rToTime').value);
+
   return entriesCache.filter(e => {
     if (p && !e.part.toLowerCase().includes(p)) return false;
     if (v && !`${e.vendorCode} ${e.vendorName}`.toLowerCase().includes(v)) return false;
-    if (f && dateKey(e.createdAt) < f) return false;
-    if (t && dateKey(e.createdAt) > t) return false;
     if (u && e.creatorName !== u) return false;
+    
+    if (fromTs && e.createdAt < fromTs) return false;
+    if (toTs && e.createdAt > toTs) return false;
+    
     return true;
   });
 }
@@ -484,10 +540,10 @@ function renderReport() {
   const rows = getReportRows();
   const total = rows.reduce((s,e)=>s+e.qty,0);
   $('reportStats').innerHTML = `
-    <div class="stat"><div class="lbl">Entries</div><div class="val">${rows.length}</div></div>
-    <div class="stat green"><div class="lbl">Qty</div><div class="val">${total}</div></div>
-    <div class="stat orange"><div class="lbl">Parts</div><div class="val">${new Set(rows.map(e=>e.part)).size}</div></div>
-    <div class="stat purple"><div class="lbl">Vendors</div><div class="val">${new Set(rows.map(e=>e.vendorCode)).size}</div></div>`;
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">TOTAL ENTRIES</div><div style="font-size:22px;font-weight:800;color:var(--blue)">${rows.length}</div></div>
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">TOTAL QTY</div><div style="font-size:22px;font-weight:800;color:var(--green)">${total}</div></div>
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">UNIQUE PARTS</div><div style="font-size:22px;font-weight:800;color:#d97706">${new Set(rows.map(e=>e.part)).size}</div></div>
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">UNIQUE VENDORS</div><div style="font-size:22px;font-weight:800;color:#8b5cf6">${new Set(rows.map(e=>e.vendorCode)).size}</div></div>`;
 
   const byPart = new Map();
   rows.forEach(e => { if(!byPart.has(e.part)) byPart.set(e.part,{desc:e.description,qty:0,c:0}); const o=byPart.get(e.part); o.qty+=e.qty; o.c++; });
@@ -498,10 +554,8 @@ function renderReport() {
   $('repVendorBody').innerHTML = byVen.size ? [...byVen.entries()].sort((a,b)=>b[1].qty-a[1].qty).map(([k,o])=>`<tr><td><b>${esc(k)}</b></td><td>${esc(o.name)}</td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`).join('') : `<tr><td colspan="4" class="empty">No data</td></tr>`;
 
   const byDate = new Map();
-  rows.forEach(e => { const k=dateKey(e.createdAt); if(!byDate.has(k)) byDate.set(k,{qty:0,c:0}); const o=byDate.get(k); o.qty+=e.qty; o.c++; });
-  $('repDateBody').innerHTML = byDate.size ? [...byDate.entries()].sort((a,b)=>b[0].localeCompare(a[0])).map(([d,o])=>{const[y,m,dd]=d.split('-');return `<tr><td><b>${dd}-${m}-${y}</b></td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`}).join('') : `<tr><td colspan="3" class="empty">No data</td></tr>`;
-
-  $('repDetailBody').innerHTML = rows.length ? rows.map(e=>`<tr><td><span class="badge">${esc(e.entryNo)}</span></td><td>${fmtDT(e.createdAt)}</td><td><b>${esc(e.part)}</b></td><td>${esc(e.description)}</td><td class="num">${e.qty}</td><td>${esc(e.invoice)}</td><td>${esc(e.vendorCode)}</td><td>${esc(e.creatorName)}</td></tr>`).join('') : `<tr><td colspan="8" class="empty">No data</td></tr>`;
+  rows.forEach(e => { const k=fmtDate(e.createdAt); if(!byDate.has(k)) byDate.set(k,{qty:0,c:0}); const o=byDate.get(k); o.qty+=e.qty; o.c++; });
+  $('repDateBody').innerHTML = byDate.size ? [...byDate.entries()].sort((a,b)=>b[1].qty-a[1].qty).map(([d,o])=>`<tr><td><b>${d}</b></td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`).join('') : `<tr><td colspan="3" class="empty">No data</td></tr>`;
 
   renderAudit();
 }
@@ -511,16 +565,12 @@ function renderAudit() {
   $('auditBody').innerHTML = auditCache.length ? auditCache.map(a=>`<tr><td>${fmtDT(a.deletedAt)}</td><td><span class="badge red">${esc(a.entryNo)}</span></td><td>${esc(a.part)}</td><td class="num">${a.qty}</td><td>${esc(a.invoice)}</td><td>${esc(a.deletedBy)}</td></tr>`).join('') : `<tr><td colspan="6" class="empty">No deletions</td></tr>`;
 }
 
-function resetReportFilters() { ['rPart','rVendor','rFrom','rTo'].forEach(id=>$(id).value=''); $('rUser').value=''; renderReport(); }
-window.resetReportFilters = resetReportFilters;
-
-// ================= MASTER =================
-function renderMaster() {
-  const q = ($('mSearch').value||'').trim().toLowerCase();
-  const rows = MASTER_ALL.filter(r => !q || `${r.Partnumber} ${r.MaterialDescription} ${r.Vendorcode} ${r.VendorName}`.toLowerCase().includes(q));
-  $('masterBody').innerHTML = rows.length ? rows.map(r=>`<tr><td><b>${esc(r.Partnumber)}</b></td><td>${esc(r.MaterialDescription)}</td><td>${esc(r.fg)}</td><td>${esc(r.fgname)}</td><td>${esc(r.BOMLevel)}</td><td>${esc(r.Vendorcode)}</td><td>${esc(r.VendorName)}</td></tr>`).join('') : `<tr><td colspan="7" class="empty">No records</td></tr>`;
+function resetReportFilters() { 
+    ['rPart','rVendor','rFrom','rFromTime','rTo','rToTime'].forEach(id=>$(id).value=''); 
+    $('rUser').value=''; 
+    renderReport(); 
 }
-window.renderMaster = renderMaster;
+window.resetReportFilters = resetReportFilters;
 
 // ================= EXPORT CSV =================
 function downloadCSV(name, rows) {
@@ -532,23 +582,23 @@ function downloadCSV(name, rows) {
 function exportEntries() {
   const rows = getFilteredList(); if (!rows.length) return toast('No data', 'error');
   const out = [['Entry No','Date','Time','Part','Desc','Qty','Invoice','Vendor Code','Vendor Name','By']];
-  rows.forEach(e => out.push([e.entryNo, fmtDate(e.createdAt), new Date(e.createdAt).toLocaleTimeString(), e.part, e.description, e.qty, e.invoice, e.vendorCode, e.vendorName, e.creatorName]));
-  downloadCSV(`Entries_${dateKey(Date.now())}.csv`, out);
+  rows.forEach(e => out.push([e.entryNo, fmtDate(e.createdAt), fmtTime(e.createdAt), e.part, e.description, e.qty, e.invoice, e.vendorCode, e.vendorName, e.creatorName]));
+  downloadCSV(`Entries_${new Date().toISOString().slice(0,10)}.csv`, out);
 }
 window.exportEntries = exportEntries;
 function exportReport() {
   const rows = getReportRows(); if (!rows.length) return toast('No data', 'error');
   const out = [['Entry No','Date','Time','Part','Desc','Qty','Invoice','Vendor Code','Vendor Name','By']];
-  rows.forEach(e => out.push([e.entryNo, fmtDate(e.createdAt), new Date(e.createdAt).toLocaleTimeString(), e.part, e.description, e.qty, e.invoice, e.vendorCode, e.vendorName, e.creatorName]));
+  rows.forEach(e => out.push([e.entryNo, fmtDate(e.createdAt), fmtTime(e.createdAt), e.part, e.description, e.qty, e.invoice, e.vendorCode, e.vendorName, e.creatorName]));
   out.push(['TOTAL','','','','', rows.reduce((s,e)=>s+e.qty,0),'','','','']);
-  downloadCSV(`Report_${dateKey(Date.now())}.csv`, out);
+  downloadCSV(`Report_${new Date().toISOString().slice(0,10)}.csv`, out);
 }
 window.exportReport = exportReport;
 
 // ================= ADMIN =================
 function renderUserList() {
   const rows = Object.entries(usersCache).map(([uid, p]) => ({ uid, ...p }));
-  $('userListBody').innerHTML = rows.length ? rows.map(u=>`<tr><td><b>${esc(u.userId||'')}</b></td><td>${esc(u.name||'')}</td><td><span class="badge ${u.role==='Admin'?'':'gray'}">${esc(u.role||'Store')}</span></td></tr>`).join('') : `<tr><td colspan="3" class="empty">No users</td></tr>`;
+  $('userListBody').innerHTML = rows.length ? rows.map(u=>`<tr><td><b>${esc(u.userId||'')}</b></td><td>${esc(u.name||'')}</td><td><span class="badge">${esc(u.role||'Store')}</span></td></tr>`).join('') : `<tr><td colspan="3" class="empty">No users</td></tr>`;
 }
 
 async function adminAddUser() {
@@ -574,7 +624,6 @@ async function adminAddUser() {
     $('nuUser').value=''; $('nuPin').value=''; $('nuName').value='';
   } catch(e) {
     msg.innerHTML = `<div class="err">❌ ${esc(e.message)}</div>`;
-    // try to restore session
     try { await signInWithEmailAndPassword(auth, adminEmail, adminPass); } catch {}
   }
 }
@@ -589,8 +638,6 @@ document.querySelectorAll('.tab').forEach(btn => {
     $('tab-'+btn.dataset.tab).classList.add('active');
     if (btn.dataset.tab==='list') renderList();
     if (btn.dataset.tab==='report') renderReport();
-    if (btn.dataset.tab==='master') renderMaster();
-    if (btn.dataset.tab==='entry') renderToday();
     if (btn.dataset.tab==='admin') renderUserList();
   });
 });
