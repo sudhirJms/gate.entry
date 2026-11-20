@@ -83,8 +83,8 @@ tbody tr:hover{background:#f8fafc}tbody tr:last-child td{border-bottom:none}
   <div class="login-card">
     <h1>🚚 Gate Entry</h1>
     <div class="sub">Store Department – PIN Login</div>
-    <label>User ID</label>
-    <input id="authUser" placeholder="e.g. ravi" autocomplete="username">
+    <label>User ID / Email</label>
+    <input id="authUser" placeholder="e.g. admin या sudhir.zf@gmail.com" autocomplete="username">
     <label>PIN (min 6 digits)</label>
     <input id="authPin" type="password" inputmode="numeric" placeholder="••••••" autocomplete="current-password">
     <div id="authErr" class="err"></div>
@@ -217,7 +217,7 @@ import { getDatabase, ref, onValue, push, set, remove, get }
 const firebaseConfig = {
   apiKey: "AIzaSyDgOyMRYecNChefLvx_9ecHD5_nn2y4ai4",
   authDomain: "gate-entry-6c431.firebaseapp.com",
-  databaseURL: "https://gate-entry-6c431-default-rtdb.firebaseio.com", // <-- ये सबसे ज़रूरी है
+  databaseURL: "https://gate-entry-6c431-default-rtdb.firebaseio.com", 
   projectId: "gate-entry-6c431",
   storageBucket: "gate-entry-6c431.firebasestorage.app",
   messagingSenderId: "834693367870",
@@ -256,12 +256,26 @@ window.closeModal = closeModal;
 
 // ================= AUTH =================
 async function login() {
-  const u = $('authUser').value.trim().toLowerCase();
+  let u = $('authUser').value.trim().toLowerCase();
   const p = $('authPin').value;
   $('authErr').textContent='';
-  if (!u || p.length < 6) { $('authErr').textContent='User ID और 6+ digit PIN दोनों चाहिए'; return; }
-  try { await signInWithEmailAndPassword(auth, u + EMAIL_DOMAIN, p); }
-  catch(e) { $('authErr').textContent='गलत User ID या PIN'; }
+  
+  if (!u || p.length < 6) { 
+    $('authErr').textContent='User ID/Email और 6+ digit PIN दोनों चाहिए'; 
+    return; 
+  }
+  
+  // यहाँ फिक्स है: अगर यूजर ईमेल नहीं डालता (जैसे सिर्फ admin), तो @gate.local जुड़ेगा
+  if (!u.includes('@')) {
+    u = u + EMAIL_DOMAIN;
+  }
+  
+  try { 
+    await signInWithEmailAndPassword(auth, u, p); 
+  }
+  catch(e) { 
+    $('authErr').textContent='गलत User ID/Email या PIN'; 
+  }
 }
 
 async function logout() { await signOut(auth); }
