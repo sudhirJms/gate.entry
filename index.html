@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gate Entry – Store</title>
+<style>
+:root{--blue:#2563eb;--green:#16a34a;--red:#dc2626;--slate:#1e293b;--muted:#64748b;--line:#e2e8f0;--bg:#eef2f7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--slate);font-size:14px}
+.hidden{display:none!important}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:8px;font-size:13px;font-weight:600;transition:.15s}
+button:active{transform:scale(.98)}
+input,select{font-family:inherit;font-size:13px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;outline:none;background:#fff;width:100%;color:var(--slate)}
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+input[readonly]{background:#f8fafc;color:var(--muted)}
+label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}
+.muted{color:var(--muted)}.err{color:var(--red);font-size:12px;font-weight:600;margin-top:6px}
+.ok{color:var(--green);font-size:12px;font-weight:600;margin-top:6px}
+.warn{color:#d97706;font-size:12px;font-weight:600;margin-top:6px}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e3a8a,#2563eb 60%,#0ea5e9);padding:20px}
+.login-card{background:#fff;padding:36px 32px;border-radius:18px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.login-card h1{font-size:22px;margin-bottom:4px}
+.login-card .sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.login-card label{margin-top:14px}
+.btn-primary{background:var(--blue);color:#fff;padding:11px 18px}.btn-primary:hover{background:#1d4ed8}
+.login-card .btn-primary{width:100%;margin-top:22px;padding:12px;font-size:14px}
+.hint{margin-top:18px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6}
+.topbar{background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(30,58,138,.25)}
+.brand{font-size:16px;font-weight:700;display:flex;align-items:center;gap:9px}
+.brand span{background:rgba(255,255,255,.18);padding:3px 9px;border-radius:20px;font-size:11px}
+.userbox{display:flex;align-items:center;gap:12px;font-size:13px}
+.btn-sm{padding:7px 13px;font-size:12px}
+.ghost{background:rgba(255,255,255,.16);color:#fff}.ghost:hover{background:rgba(255,255,255,.28)}
+.tabs{display:flex;gap:4px;background:#fff;padding:0 16px;border-bottom:1px solid var(--line);position:sticky;top:58px;z-index:40;overflow-x:auto}
+.tab{background:transparent;color:var(--muted);padding:14px 16px;border-radius:0;border-bottom:3px solid transparent;white-space:nowrap;font-size:13.5px}
+.tab:hover{color:var(--blue)}.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
+main{padding:20px;max-width:1500px;margin:0 auto}
+.tabpane{display:none}.tabpane.active{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+.card h2{font-size:15px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue)}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;border-left:4px solid var(--blue)}
+.stat .lbl{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase}
+.stat .val{font-size:26px;font-weight:800;margin-top:6px}
+.stat.green{border-left-color:var(--green)}.stat.green .val{color:var(--green)}
+.stat.orange{border-left-color:#f59e0b}.stat.orange .val{color:#d97706}
+.stat.purple{border-left-color:#8b5cf6}.stat.purple .val{color:#7c3aed}
+.btn{background:var(--blue);color:#fff;padding:11px 20px}.btn:hover{background:#1d4ed8}
+.btn-green{background:var(--green)}.btn-green:hover{background:#15803d}
+.btn-danger{background:var(--red)}.btn-danger:hover{background:#b91c1c}
+.btn-ghost{background:#f1f5f9;color:var(--slate)}.btn-ghost:hover{background:#e2e8f0}
+.btn-outline{background:#fff;color:var(--slate);border:1px solid var(--line)}.btn-outline:hover{background:#f8fafc}
+.table-wrap{max-height:65vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+thead th{position:sticky;top:0;background:#f1f5f9;z-index:2;text-align:left;padding:11px 12px;font-size:11px;text-transform:uppercase;color:#475569;font-weight:700;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody td{padding:10px 12px;border-bottom:1px solid #f1f5f9;white-space:nowrap}
+tbody tr:hover{background:#f8fafc}tbody tr:last-child td{border-bottom:none}
+.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.empty{padding:44px 20px;text-align:center;color:var(--muted);font-size:13px}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#dbeafe;color:#1d4ed8}
+.badge.gray{background:#f1f5f9;color:#475569}
+.badge.red{background:#fee2e2;color:#b91c1c}
+.filterbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;align-items:end;margin-bottom:16px}
+.filterbar .btn{height:40px}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal-card{background:#fff;border-radius:14px;padding:26px;width:100%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.modal-card h3{font-size:16px;margin-bottom:10px}
+.modal-card p{font-size:13.5px;color:var(--muted);line-height:1.6}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+#toast{position:fixed;top:74px;right:22px;z-index:300;display:flex;flex-direction:column;gap:8px}
+.toast-item{background:#0f172a;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast-item.success{background:#15803d}.toast-item.error{background:#b91c1c}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="login-wrap">
+  <div class="login-card">
+    <h1>🚚 Gate Entry</h1>
+    <div class="sub">Store Department – PIN Login</div>
+    <label>User ID</label>
+    <input id="authUser" placeholder="e.g. ravi" autocomplete="username">
+    <label>PIN (min 6 digits)</label>
+    <input id="authPin" type="password" inputmode="numeric" placeholder="••••••" autocomplete="current-password">
+    <div id="authErr" class="err"></div>
+    <button class="btn-primary" onclick="login()">Login</button>
+    <div class="hint">Account admin से लें.<br>PIN भूल गए तो admin से reset करवाएँ.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <header class="topbar">
+    <div class="brand">🚚 Gate Entry <span>STORE</span></div>
+    <div class="userbox"><span id="whoami"></span><button class="btn-sm ghost" onclick="logout()">Logout</button></div>
+  </header>
+  <nav class="tabs">
+    <button class="tab active" data-tab="entry">➕ New Entry</button>
+    <button class="tab" data-tab="list">📋 Entries</button>
+    <button class="tab" data-tab="report">📊 Reports</button>
+    <button class="tab" data-tab="master">🗂️ Master</button>
+    <button class="tab" data-tab="admin" id="adminTab" style="display:none">⚙️ Admin</button>
+  </nav>
+  <main>
+    <!-- ENTRY -->
+    <section id="tab-entry" class="tabpane active">
+      <div class="card">
+        <h2><span class="dot"></span>Gate Entry – Material Inward</h2>
+        <div class="grid g3">
+          <div><label>Part Number *</label><input id="ePart" list="dlParts" placeholder="Type / select" autocomplete="off"><datalist id="dlParts"></datalist><div id="partMsg"></div></div>
+          <div><label>Description *</label><input id="eDesc" placeholder="Auto-fill"></div>
+          <div><label>Quantity *</label><input id="eQty" type="number" min="1" step="1" placeholder="0"></div>
+          <div><label>Invoice No *</label><input id="eInvoice" placeholder="INV-..."></div>
+          <div><label>Vendor Code *</label><input id="eVendorCode" list="dlVendors" placeholder="Type / select" autocomplete="off"><datalist id="dlVendors"></datalist></div>
+          <div><label>Vendor Name</label><input id="eVendorName" placeholder="Auto-fill"></div>
+        </div>
+        <div style="margin-top:14px"><label>Remarks</label><input id="eRemarks" placeholder="Optional"></div>
+        <div id="entryMsg"></div>
+        <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+          <button class="btn btn-green" onclick="saveEntry()">✔ Save</button>
+          <button class="btn btn-ghost" onclick="clearForm()">✖ Clear</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2><span class="dot" style="background:#16a34a"></span>Today's Entries</h2>
+        <div class="table-wrap" style="max-height:42vh"><table><thead><tr><th>Entry No</th><th>Time</th><th>Part</th><th>Desc</th><th class="num">Qty</th><th>Invoice</th><th>Vendor</th><th>By</th></tr></thead><tbody id="todayBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- LIST -->
+    <section id="tab-list" class="tabpane">
+      <div class="card">
+        <h2><span class="dot"></span>All Gate Entries</h2>
+        <div class="filterbar">
+          <div><label>Search</label><input id="fSearch" placeholder="Any text" oninput="renderList()"></div>
+          <div><label>Part No</label><input id="fPart" list="dlParts" oninput="renderList()" autocomplete="off"></div>
+          <div><label>Vendor Code</label><input id="fVendor" list="dlVendors" oninput="renderList()" autocomplete="off"></div>
+          <div><label>From</label><input id="fFrom" type="date" onchange="renderList()"></div>
+          <div><label>To</label><input id="fTo" type="date" onchange="renderList()"></div>
+          <button class="btn btn-ghost" onclick="resetListFilters()">↺ Reset</button>
+          <button class="btn btn-outline" onclick="exportEntries()">⬇ CSV</button>
+        </div>
+        <div class="muted" id="listCount" style="font-size:12.5px;font-weight:600;margin-bottom:10px"></div>
+        <div class="table-wrap"><table><thead><tr><th>#</th><th>Entry No</th><th>Date &amp; Time</th><th>Part</th><th>Desc</th><th class="num">Qty</th><th>Invoice</th><th>Vendor</th><th>By</th><th>Action</th></tr></thead><tbody id="listBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- REPORT -->
+    <section id="tab-report" class="tabpane">
+      <div class="card">
+        <h2><span class="dot"></span>Filters</h2>
+        <div class="filterbar">
+          <div><label>Part No</label><input id="rPart" list="dlParts" oninput="renderReport()" autocomplete="off"></div>
+          <div><label>Vendor Code</label><input id="rVendor" list="dlVendors" oninput="renderReport()" autocomplete="off"></div>
+          <div><label>From</label><input id="rFrom" type="date" onchange="renderReport()"></div>
+          <div><label>To</label><input id="rTo" type="date" onchange="renderReport()"></div>
+          <div><label>User</label><select id="rUser" onchange="renderReport()"><option value="">All</option></select></div>
+          <button class="btn btn-ghost" onclick="resetReportFilters()">↺ Reset</button>
+          <button class="btn btn-outline" onclick="exportReport()">⬇ CSV</button>
+        </div>
+      </div>
+      <div class="grid g4" id="reportStats" style="margin-bottom:18px"></div>
+      <div class="card"><h2><span class="dot"></span>By Part</h2><div class="table-wrap" style="max-height:40vh"><table><thead><tr><th>Part</th><th>Desc</th><th class="num">Qty</th><th class="num">Entries</th></tr></thead><tbody id="repPartBody"></tbody></table></div></div>
+      <div class="card"><h2><span class="dot" style="background:#8b5cf6"></span>By Vendor</h2><div class="table-wrap" style="max-height:40vh"><table><thead><tr><th>Code</th><th>Name</th><th class="num">Qty</th><th class="num">Entries</th></tr></thead><tbody id="repVendorBody"></tbody></table></div></div>
+      <div class="card"><h2><span class="dot" style="background:#16a34a"></span>By Date</h2><div class="table-wrap" style="max-height:40vh"><table><thead><tr><th>Date</th><th class="num">Qty</th><th class="num">Entries</th></tr></thead><tbody id="repDateBody"></tbody></table></div></div>
+      <div class="card"><h2><span class="dot" style="background:#f59e0b"></span>Detail</h2><div class="table-wrap" style="max-height:45vh"><table><thead><tr><th>Entry No</th><th>Date &amp; Time</th><th>Part</th><th>Desc</th><th class="num">Qty</th><th>Invoice</th><th>Vendor</th><th>By</th></tr></thead><tbody id="repDetailBody"></tbody></table></div></div>
+      <div class="card"><h2><span class="dot" style="background:#dc2626"></span>Delete Audit Log</h2><div class="table-wrap" style="max-height:35vh"><table><thead><tr><th>When</th><th>Entry No</th><th>Part</th><th class="num">Qty</th><th>Invoice</th><th>Deleted By</th></tr></thead><tbody id="auditBody"></tbody></table></div></div>
+    </section>
+
+    <!-- MASTER -->
+    <section id="tab-master" class="tabpane">
+      <div class="card">
+        <h2><span class="dot"></span>Part Master (CSV)</h2>
+        <input id="mSearch" placeholder="🔍 Search..." oninput="renderMaster()" style="margin-bottom:14px">
+        <div class="table-wrap" style="max-height:60vh"><table><thead><tr><th>Part</th><th>Desc</th><th>FG</th><th>FG Name</th><th>BOM</th><th>Vendor Code</th><th>Vendor Name</th></tr></thead><tbody id="masterBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="tab-admin" class="tabpane">
+      <div class="card">
+        <h2><span class="dot" style="background:#8b5cf6"></span>Add User</h2>
+        <div class="grid g3">
+          <div><label>User ID</label><input id="nuUser" placeholder="e.g. ravi"></div>
+          <div><label>PIN (6+ digits)</label><input id="nuPin" inputmode="numeric" placeholder="123456"></div>
+          <div><label>Display Name</label><input id="nuName" placeholder="Ravi Kumar"></div>
+          <div><label>Role</label><select id="nuRole"><option>Store</option><option>Admin</option></select></div>
+        </div>
+        <div id="userMsg"></div>
+        <button class="btn" style="margin-top:14px" onclick="adminAddUser()">➕ Add User</button>
+      </div>
+      <div class="card">
+        <h2><span class="dot" style="background:#8b5cf6"></span>All Users</h2>
+        <div class="table-wrap" style="max-height:40vh"><table><thead><tr><th>User ID</th><th>Name</th><th>Role</th></tr></thead><tbody id="userListBody"></tbody></table></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modal-card"><h3 id="modalTitle">Confirm</h3><p id="modalMsg"></p><div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-danger" id="modalOk">Delete</button></div></div></div>
+<div id="toast"></div>
+
+<script type="module">
+// ================= CONFIG (अपनी values यहाँ डालें) =================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+         createUserWithEmailAndPassword, updateProfile }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue, push, set, remove, get }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "YOUR_PROJECT_ID",
+  appId: "YOUR_APP_ID"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const EMAIL_DOMAIN = "@gate.local";   // internal only — कोई email नहीं भेजा जाता
+
+// ================= STATE =================
+let USER = null;          // {uid, name, role, userId}
+let PART_MAP = {}, VENDOR_MAP = {}, MASTER_ALL = [];
+let entriesCache = [], auditCache = [], usersCache = {};
+
+// ================= HELPERS =================
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const fmtDT = ts => { const d = new Date(ts); return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; };
+const fmtDate = ts => { const d = new Date(ts); return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`; };
+const dateKey = ts => { const d = new Date(ts); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+
+function toast(m, t='') { const e = document.createElement('div'); e.className='toast-item '+t; e.textContent=m; $('toast').appendChild(e); setTimeout(()=>{e.style.opacity=0;e.style.transition='.3s';setTimeout(()=>e.remove(),300)},2600); }
+
+let modalResolve = null;
+function confirmModal(title, msg, ok='Delete') {
+  $('modalTitle').textContent=title; $('modalMsg').textContent=msg; $('modalOk').textContent=ok;
+  $('modal').classList.remove('hidden');
+  return new Promise(r=>modalResolve=r);
+}
+$('modalOk').onclick = () => { $('modal').classList.add('hidden'); if(modalResolve) modalResolve(true); modalResolve=null; };
+function closeModal() { $('modal').classList.add('hidden'); if(modalResolve) modalResolve(false); modalResolve=null; }
+window.closeModal = closeModal;
+
+// ================= AUTH =================
+async function login() {
+  const u = $('authUser').value.trim().toLowerCase();
+  const p = $('authPin').value;
+  $('authErr').textContent='';
+  if (!u || p.length < 6) { $('authErr').textContent='User ID और 6+ digit PIN दोनों चाहिए'; return; }
+  try { await signInWithEmailAndPassword(auth, u + EMAIL_DOMAIN, p); }
+  catch(e) { $('authErr').textContent='गलत User ID या PIN'; }
+}
+
+async function logout() { await signOut(auth); }
+
+async function loadProfile(uid) {
+  const snap = await get(ref(db, 'userProfiles/' + uid));
+  if (snap.exists()) return snap.val();
+  // पहली बार — auto-create Store profile
+  const userId = (auth.currentUser.email || '').split('@')[0];
+  const prof = { name: userId, role: 'Store', userId };
+  await set(ref(db, 'userProfiles/' + uid), prof);
+  return prof;
+}
+
+onAuthStateChanged(auth, async user => {
+  if (!user) { USER=null; $('app').classList.add('hidden'); $('loginScreen').classList.remove('hidden'); return; }
+  const prof = await loadProfile(user.uid);
+  USER = { uid: user.uid, ...prof };
+  $('loginScreen').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  $('whoami').innerHTML = `👤 <b>${esc(USER.name)}</b> <span class="badge ${USER.role==='Admin'?'':'gray'}" style="margin-left:6px">${esc(USER.role)}</span>`;
+  $('adminTab').style.display = USER.role === 'Admin' ? '' : 'none';
+
+  await loadMaster();
+  attachRealtimeListeners();
+});
+
+// ================= MASTER CSV =================
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim() !== '');
+  const headers = lines[0].split(',').map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const v = []; let c='', q=false;
+    for (const ch of line){ if(ch==='"'){q=!q;continue} if(ch===','&&!q){v.push(c);c='';continue} c+=ch; }
+    v.push(c); const o={}; headers.forEach((h,i)=>o[h]=(v[i]||'').trim()); return o;
+  });
+}
+
+async function loadMaster() {
+  try { const r = await fetch('master.csv'); if(!r.ok) throw 0; MASTER_ALL = parseCSV(await r.text()); }
+  catch { MASTER_ALL = []; }
+  PART_MAP={}; VENDOR_MAP={};
+  MASTER_ALL.forEach(r => {
+    if (r.Partnumber && !PART_MAP[r.Partnumber]) PART_MAP[r.Partnumber]={desc:r.MaterialDescription,vendorCode:r.Vendorcode,vendorName:r.VendorName,fgname:r.fgname};
+    if (r.Vendorcode && !VENDOR_MAP[r.Vendorcode]) VENDOR_MAP[r.Vendorcode]=r.VendorName;
+  });
+  $('dlParts').innerHTML = Object.keys(PART_MAP).sort().map(p=>`<option value="${esc(p)}">${esc(PART_MAP[p].desc)}</option>`).join('');
+  $('dlVendors').innerHTML = Object.keys(VENDOR_MAP).sort().map(v=>`<option value="${esc(v)}">${esc(VENDOR_MAP[v])}</option>`).join('');
+}
+
+// ================= REALTIME LISTENERS =================
+function attachRealtimeListeners() {
+  onValue(ref(db, 'entries'), snap => {
+    entriesCache = [];
+    snap.forEach(c => { entriesCache.push({ id: c.key, ...c.val() }); });
+    entriesCache.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+    renderToday(); renderList(); renderReport(); fillReportUserDropdown();
+  });
+  onValue(ref(db, 'auditLog'), snap => {
+    auditCache = [];
+    snap.forEach(c => auditCache.push({ id: c.key, ...c.val() }));
+    auditCache.sort((a,b) => (b.deletedAt||0) - (a.deletedAt||0));
+    renderAudit();
+  });
+  onValue(ref(db, 'userProfiles'), snap => {
+    usersCache = snap.val() || {};
+    renderUserList();
+  });
+}
+
+// ================= ENTRY AUTO-FILL =================
+$('ePart').addEventListener('input', () => {
+  const pn = $('ePart').value.trim();
+  if (!pn) { $('partMsg').innerHTML=''; $('eDesc').value=''; $('eDesc').readOnly=false; return; }
+  if (PART_MAP[pn]) {
+    $('eDesc').value=PART_MAP[pn].desc; $('eDesc').readOnly=true;
+    $('partMsg').innerHTML=`<div class="ok">✔ ${esc(PART_MAP[pn].fgname||'')}</div>`;
+    if (PART_MAP[pn].vendorCode && !$('eVendorCode').value) { $('eVendorCode').value=PART_MAP[pn].vendorCode; $('eVendorName').value=PART_MAP[pn].vendorName||''; }
+  } else { $('eDesc').readOnly=false; $('partMsg').innerHTML='<div class="warn">⚠ Master में नहीं — description हाथ से लिखें</div>'; }
+});
+$('eVendorCode').addEventListener('input', () => {
+  const vc = $('eVendorCode').value.trim();
+  if (VENDOR_MAP[vc]) $('eVendorName').value = VENDOR_MAP[vc];
+  else if (!vc) $('eVendorName').value='';
+});
+
+function clearForm() {
+  ['ePart','eDesc','eQty','eInvoice','eVendorCode','eVendorName','eRemarks'].forEach(id=>{$(id).value='';$(id).readOnly=false;});
+  $('partMsg').innerHTML=''; $('entryMsg').innerHTML=''; $('ePart').focus();
+}
+window.clearForm = clearForm;
+
+// ================= SAVE ENTRY =================
+function makeEntryNo() { const d=new Date(); return `GE-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${Date.now().toString().slice(-6)}`; }
+
+async function saveEntry() {
+  const msg=$('entryMsg'); msg.innerHTML='';
+  const part=$('ePart').value.trim(), desc=$('eDesc').value.trim(), qty=parseInt($('eQty').value,10),
+        invoice=$('eInvoice').value.trim(), vCode=$('eVendorCode').value.trim(), remarks=$('eRemarks').value.trim();
+  let vName=$('eVendorName').value.trim();
+  if (!part) return msg.innerHTML='<div class="err">❌ Part required</div>';
+  if (!desc) return msg.innerHTML='<div class="err">❌ Description required</div>';
+  if (!qty||qty<=0) return msg.innerHTML='<div class="err">❌ Qty > 0</div>';
+  if (!invoice) return msg.innerHTML='<div class="err">❌ Invoice required</div>';
+  if (!vCode) return msg.innerHTML='<div class="err">❌ Vendor Code required</div>';
+  if (!vName && VENDOR_MAP[vCode]) vName = VENDOR_MAP[vCode];
+  if (!vName) { vName = prompt(`Vendor code "${vCode}" master में नहीं.\nVendor Name डालें:`)?.trim(); if(!vName) return; }
+
+  const dup = entriesCache.find(e => e.invoice===invoice && e.part===part && e.vendorCode===vCode);
+  if (dup) { const ok = await confirmModal('Duplicate', `Invoice ${invoice}+${part} पहले से है (${fmtDT(dup.createdAt)}).\nफिर भी save?`, 'Save'); if(!ok) return; }
+
+  const newRef = push(ref(db, 'entries'));
+  try {
+    await set(newRef, {
+      entryNo: makeEntryNo(), creatorUid: USER.uid, creatorName: USER.name,
+      createdAt: Date.now(), part, description: desc, qty, invoice,
+      vendorCode: vCode, vendorName: vName, remarks
+    });
+    msg.innerHTML = `<div class="ok">✔ Saved</div>`;
+    toast('Entry saved ✔', 'success');
+    clearForm();
+  } catch(e) { msg.innerHTML = `<div class="err">❌ ${esc(e.message)}</div>`; }
+}
+window.saveEntry = saveEntry;
+
+// ================= RENDER TODAY =================
+function renderToday() {
+  const today = dateKey(Date.now());
+  const rows = entriesCache.filter(e => dateKey(e.createdAt) === today);
+  $('todayBody').innerHTML = rows.length ? rows.map(e => `<tr>
+    <td><span class="badge">${esc(e.entryNo)}</span></td><td>${fmtDT(e.createdAt)}</td>
+    <td><b>${esc(e.part)}</b></td><td>${esc(e.description)}</td><td class="num">${e.qty}</td>
+    <td>${esc(e.invoice)}</td><td>${esc(e.vendorCode)}–${esc(e.vendorName)}</td><td>${esc(e.creatorName)}</td>
+  </tr>`).join('') : `<tr><td colspan="8" class="empty">आज कोई entry नहीं</td></tr>`;
+}
+
+// ================= RENDER LIST =================
+function getFilteredList() {
+  const s=$('fSearch').value.trim().toLowerCase(), p=$('fPart').value.trim().toLowerCase(),
+        v=$('fVendor').value.trim().toLowerCase(), f=$('fFrom').value, t=$('fTo').value;
+  return entriesCache.filter(e => {
+    if (s && !`${e.entryNo} ${e.part} ${e.description} ${e.invoice} ${e.vendorCode} ${e.vendorName} ${e.creatorName}`.toLowerCase().includes(s)) return false;
+    if (p && !e.part.toLowerCase().includes(p)) return false;
+    if (v && !`${e.vendorCode} ${e.vendorName}`.toLowerCase().includes(v)) return false;
+    if (f && dateKey(e.createdAt) < f) return false;
+    if (t && dateKey(e.createdAt) > t) return false;
+    return true;
+  });
+}
+
+function renderList() {
+  const rows = getFilteredList();
+  const total = rows.reduce((s,e)=>s+e.qty,0);
+  $('listCount').innerHTML = `Showing <b>${rows.length}</b> | Total Qty: <b>${total}</b>`;
+  $('listBody').innerHTML = rows.length ? rows.map((e,i) => {
+    const canDel = e.creatorUid === USER.uid;
+    return `<tr>
+      <td>${i+1}</td><td><span class="badge">${esc(e.entryNo)}</span></td><td>${fmtDT(e.createdAt)}</td>
+      <td><b>${esc(e.part)}</b></td><td>${esc(e.description)}</td><td class="num">${e.qty}</td>
+      <td>${esc(e.invoice)}</td><td>${esc(e.vendorCode)}</td><td>${esc(e.creatorName)}</td>
+      <td>${canDel ? `<button class="btn-sm btn-danger" onclick="deleteEntry('${e.id}','${esc(e.entryNo)}','${esc(e.part)}',${e.qty},'${esc(e.invoice)}')">🗑 Delete</button>` : '<span class="muted" style="font-size:11px">—</span>'}</td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="10" class="empty">कोई entry नहीं</td></tr>`;
+}
+window.renderList = renderList;
+
+function resetListFilters() { ['fSearch','fPart','fVendor','fFrom','fTo'].forEach(id=>$(id).value=''); renderList(); }
+window.resetListFilters = resetListFilters;
+
+// ================= DELETE =================
+async function deleteEntry(id, entryNo, part, qty, invoice) {
+  const ok = await confirmModal('Delete', `Entry ${entryNo} (Part ${part}, Qty ${qty}) delete?`, 'Delete');
+  if (!ok) return;
+  try {
+    await remove(ref(db, 'entries/' + id));
+    await set(push(ref(db, 'auditLog')), {
+      entryNo, part, qty, invoice, deletedBy: USER.name, deletedByUid: USER.uid, deletedAt: Date.now()
+    });
+    toast('Deleted ✔', 'success');
+  } catch(e) { toast('Delete fail: ' + e.message, 'error'); }
+}
+window.deleteEntry = deleteEntry;
+
+// ================= RENDER REPORT =================
+function fillReportUserDropdown() {
+  const users = [...new Set(entriesCache.map(e=>e.creatorName))].sort();
+  const cur = $('rUser').value;
+  $('rUser').innerHTML = '<option value="">All</option>' + users.map(u=>`<option value="${esc(u)}">${esc(u)}</option>`).join('');
+  $('rUser').value = cur;
+}
+
+function getReportRows() {
+  const p=$('rPart').value.trim().toLowerCase(), v=$('rVendor').value.trim().toLowerCase(),
+        f=$('rFrom').value, t=$('rTo').value, u=$('rUser').value;
+  return entriesCache.filter(e => {
+    if (p && !e.part.toLowerCase().includes(p)) return false;
+    if (v && !`${e.vendorCode} ${e.vendorName}`.toLowerCase().includes(v)) return false;
+    if (f && dateKey(e.createdAt) < f) return false;
+    if (t && dateKey(e.createdAt) > t) return false;
+    if (u && e.creatorName !== u) return false;
+    return true;
+  });
+}
+
+function renderReport() {
+  const rows = getReportRows();
+  const total = rows.reduce((s,e)=>s+e.qty,0);
+  $('reportStats').innerHTML = `
+    <div class="stat"><div class="lbl">Entries</div><div class="val">${rows.length}</div></div>
+    <div class="stat green"><div class="lbl">Qty</div><div class="val">${total}</div></div>
+    <div class="stat orange"><div class="lbl">Parts</div><div class="val">${new Set(rows.map(e=>e.part)).size}</div></div>
+    <div class="stat purple"><div class="lbl">Vendors</div><div class="val">${new Set(rows.map(e=>e.vendorCode)).size}</div></div>`;
+
+  const byPart = new Map();
+  rows.forEach(e => { if(!byPart.has(e.part)) byPart.set(e.part,{desc:e.description,qty:0,c:0}); const o=byPart.get(e.part); o.qty+=e.qty; o.c++; });
+  $('repPartBody').innerHTML = byPart.size ? [...byPart.entries()].sort((a,b)=>b[1].qty-a[1].qty).map(([k,o])=>`<tr><td><b>${esc(k)}</b></td><td>${esc(o.desc)}</td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`).join('') : `<tr><td colspan="4" class="empty">No data</td></tr>`;
+
+  const byVen = new Map();
+  rows.forEach(e => { if(!byVen.has(e.vendorCode)) byVen.set(e.vendorCode,{name:e.vendorName,qty:0,c:0}); const o=byVen.get(e.vendorCode); o.qty+=e.qty; o.c++; });
+  $('repVendorBody').innerHTML = byVen.size ? [...byVen.entries()].sort((a,b)=>b[1].qty-a[1].qty).map(([k,o])=>`<tr><td><b>${esc(k)}</b></td><td>${esc(o.name)}</td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`).join('') : `<tr><td colspan="4" class="empty">No data</td></tr>`;
+
+  const byDate = new Map();
+  rows.forEach(e => { const k=dateKey(e.createdAt); if(!byDate.has(k)) byDate.set(k,{qty:0,c:0}); const o=byDate.get(k); o.qty+=e.qty; o.c++; });
+  $('repDateBody').innerHTML = byDate.size ? [...byDate.entries()].sort((a,b)=>b[0].localeCompare(a[0])).map(([d,o])=>{const[y,m,dd]=d.split('-');return `<tr><td><b>${dd}-${m}-${y}</b></td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`}).join('') : `<tr><td colspan="3" class="empty">No data</td></tr>`;
+
+  $('repDetailBody').innerHTML = rows.length ? rows.map(e=>`<tr><td><span class="badge">${esc(e.entryNo)}</span></td><td>${fmtDT(e.createdAt)}</td><td><b>${esc(e.part)}</b></td><td>${esc(e.description)}</td><td class="num">${e.qty}</td><td>${esc(e.invoice)}</td><td>${esc(e.vendorCode)}</td><td>${esc(e.creatorName)}</td></tr>`).join('') : `<tr><td colspan="8" class="empty">No data</td></tr>`;
+
+  renderAudit();
+}
+window.renderReport = renderReport;
+
+function renderAudit() {
+  $('auditBody').innerHTML = auditCache.length ? auditCache.map(a=>`<tr><td>${fmtDT(a.deletedAt)}</td><td><span class="badge red">${esc(a.entryNo)}</span></td><td>${esc(a.part)}</td><td class="num">${a.qty}</td><td>${esc(a.invoice)}</td><td>${esc(a.deletedBy)}</td></tr>`).join('') : `<tr><td colspan="6" class="empty">No deletions</td></tr>`;
+}
+
+function resetReportFilters() { ['rPart','rVendor','rFrom','rTo'].forEach(id=>$(id).value=''); $('rUser').value=''; renderReport(); }
+window.resetReportFilters = resetReportFilters;
+
+// ================= MASTER =================
+function renderMaster() {
+  const q = ($('mSearch').value||'').trim().toLowerCase();
+  const rows = MASTER_ALL.filter(r => !q || `${r.Partnumber} ${r.MaterialDescription} ${r.Vendorcode} ${r.VendorName}`.toLowerCase().includes(q));
+  $('masterBody').innerHTML = rows.length ? rows.map(r=>`<tr><td><b>${esc(r.Partnumber)}</b></td><td>${esc(r.MaterialDescription)}</td><td>${esc(r.fg)}</td><td>${esc(r.fgname)}</td><td>${esc(r.BOMLevel)}</td><td>${esc(r.Vendorcode)}</td><td>${esc(r.VendorName)}</td></tr>`).join('') : `<tr><td colspan="7" class="empty">No records</td></tr>`;
+}
+window.renderMaster = renderMaster;
+
+// ================= EXPORT CSV =================
+function downloadCSV(name, rows) {
+  const csv = rows.map(r => r.map(c => { const s=String(c??''); return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s; }).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+  URL.revokeObjectURL(a.href); toast('CSV downloaded', 'success');
+}
+function exportEntries() {
+  const rows = getFilteredList(); if (!rows.length) return toast('No data', 'error');
+  const out = [['Entry No','Date','Time','Part','Desc','Qty','Invoice','Vendor Code','Vendor Name','By']];
+  rows.forEach(e => out.push([e.entryNo, fmtDate(e.createdAt), new Date(e.createdAt).toLocaleTimeString(), e.part, e.description, e.qty, e.invoice, e.vendorCode, e.vendorName, e.creatorName]));
+  downloadCSV(`Entries_${dateKey(Date.now())}.csv`, out);
+}
+window.exportEntries = exportEntries;
+function exportReport() {
+  const rows = getReportRows(); if (!rows.length) return toast('No data', 'error');
+  const out = [['Entry No','Date','Time','Part','Desc','Qty','Invoice','Vendor Code','Vendor Name','By']];
+  rows.forEach(e => out.push([e.entryNo, fmtDate(e.createdAt), new Date(e.createdAt).toLocaleTimeString(), e.part, e.description, e.qty, e.invoice, e.vendorCode, e.vendorName, e.creatorName]));
+  out.push(['TOTAL','','','','', rows.reduce((s,e)=>s+e.qty,0),'','','','']);
+  downloadCSV(`Report_${dateKey(Date.now())}.csv`, out);
+}
+window.exportReport = exportReport;
+
+// ================= ADMIN =================
+function renderUserList() {
+  const rows = Object.entries(usersCache).map(([uid, p]) => ({ uid, ...p }));
+  $('userListBody').innerHTML = rows.length ? rows.map(u=>`<tr><td><b>${esc(u.userId||'')}</b></td><td>${esc(u.name||'')}</td><td><span class="badge ${u.role==='Admin'?'':'gray'}">${esc(u.role||'Store')}</span></td></tr>`).join('') : `<tr><td colspan="3" class="empty">No users</td></tr>`;
+}
+
+async function adminAddUser() {
+  const uid = $('nuUser').value.trim().toLowerCase();
+  const pin = $('nuPin').value;
+  const name = $('nuName').value.trim() || uid;
+  const role = $('nuRole').value;
+  const msg = $('userMsg'); msg.innerHTML='';
+  if (!uid || pin.length < 6) { msg.innerHTML='<div class="err">User ID और 6+ PIN चाहिए</div>'; return; }
+  if (Object.values(usersCache).some(u => (u.userId||'').toLowerCase() === uid)) { msg.innerHTML='<div class="err">User ID already exists</div>'; return; }
+  const adminPass = prompt('Confirm करने के लिए अपना PIN डालें:');
+  if (!adminPass) return;
+  const adminEmail = auth.currentUser.email;
+  try {
+    await signOut(auth);
+    const cred = await createUserWithEmailAndPassword(auth, uid + EMAIL_DOMAIN, pin);
+    await updateProfile(cred.user, { displayName: name });
+    await set(ref(db, 'userProfiles/' + cred.user.uid), { name, role, userId: uid });
+    await signOut(auth);
+    await signInWithEmailAndPassword(auth, adminEmail, adminPass);
+    msg.innerHTML = `<div class="ok">✔ User "${uid}" created</div>`;
+    toast('User created', 'success');
+    $('nuUser').value=''; $('nuPin').value=''; $('nuName').value='';
+  } catch(e) {
+    msg.innerHTML = `<div class="err">❌ ${esc(e.message)}</div>`;
+    // try to restore session
+    try { await signInWithEmailAndPassword(auth, adminEmail, adminPass); } catch {}
+  }
+}
+window.adminAddUser = adminAddUser;
+
+// ================= TABS =================
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tabpane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    $('tab-'+btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab==='list') renderList();
+    if (btn.dataset.tab==='report') renderReport();
+    if (btn.dataset.tab==='master') renderMaster();
+    if (btn.dataset.tab==='entry') renderToday();
+    if (btn.dataset.tab==='admin') renderUserList();
+  });
+});
+
+window.login = login; window.logout = logout;
+</script>
+</body>
+</html>
