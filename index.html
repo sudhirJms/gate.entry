@@ -50,13 +50,12 @@ main{padding:14px;max-width:1600px;margin:0 auto}
 .btn-ghost{background:#f1f5f9;color:var(--slate)}.btn-ghost:hover{background:#e2e8f0}
 .btn-outline{background:#fff;color:var(--slate);border:1px solid var(--line)}.btn-outline:hover{background:#f8fafc}
 
-/* USER FRIENDLY FILTER BAR */
+/* FILTER BAR */
 .filterbar{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:#fff;padding:14px;border-radius:8px;border:1px solid var(--line);margin-bottom:14px}
 .f-group{display:flex;flex-direction:column;flex:1 1 140px}
 .f-group.search{flex:2 1 200px}
 .f-group.reset{flex:0 0 auto}
 .f-group.reset button{width:100%;height:40px;font-size:13px}
-/* Mobile view adjustments */
 @media(max-width:600px){
     .f-group{flex:1 1 45%}
     .f-group.search{flex:1 1 100%}
@@ -133,8 +132,9 @@ tbody tr:last-child td{border-bottom:none}
   </header>
   
   <nav class="tabs">
-    <button class="tab active" data-tab="list">📋 Gate Entries (SAP)</button>
+    <!-- NEW ENTRY MOVED TO FIRST PLACE -->
     <button class="tab" data-tab="entry" id="nav-entry" style="display:none">➕ New Entry</button>
+    <button class="tab active" data-tab="list">📋 Gate Entries (SAP)</button>
     <button class="tab" data-tab="report" id="nav-report" style="display:none">📊 Reports</button>
     <button class="tab" data-tab="admin" id="nav-admin" style="display:none">⚙️ Admin</button>
   </nav>
@@ -143,7 +143,6 @@ tbody tr:last-child td{border-bottom:none}
     <!-- SAP LIST VIEW -->
     <section id="tab-list" class="tabpane active">
       
-      <!-- FILTERS -->
       <div class="filterbar">
           <div class="f-group search">
             <label>🔍 Search</label>
@@ -196,7 +195,8 @@ tbody tr:last-child td{border-bottom:none}
             <thead>
               <tr>
                 <th>#</th><th>Entry No</th><th>Date</th><th>Time</th><th>Supplier (Code)</th><th>Name 1 (Vendor)</th>
-                <th>Material (Part)</th><th>Description</th><th class="num">Rcvd Qty</th><th>Delv Note (Invoice)</th><th>Entered By</th><th>Action</th>
+                <th>Material (Part)</th><th>Description</th><th class="num">Rcvd Qty</th><th>Delv Note (Invoice)</th><th>Entered By</th>
+                <th id="th-action">Action</th>
               </tr>
             </thead>
             <tbody id="listBody"></tbody>
@@ -423,15 +423,12 @@ async function login() {
       return; 
   }
 
-  // 🔥 Firebase की (Key) में . नहीं हो सकता, इसलिए हम उसे _ में बदल रहे हैं
   const safeKey = u.replace(/[.#$/\[\]]/g, '_');
-
   const btn = $('btnSubmitLogin');
   btn.textContent = 'Checking...';
   btn.disabled = true;
 
   try {
-      // Check lock status from DB
       const attemptRef = ref(db, 'loginAttempts/' + safeKey);
       const attemptSnap = await get(attemptRef);
       let attemptsData = attemptSnap.exists() ? attemptSnap.val() : { count: 0, lockUntil: 0 };
@@ -445,7 +442,7 @@ async function login() {
 
       try { 
           await signInWithEmailAndPassword(auth, email, p); 
-          await remove(attemptRef); // Success: Reset attempts
+          await remove(attemptRef); 
           closeLoginModal();
       } catch(e) { 
           let newCount = (attemptsData.count || 0) + 1;
@@ -493,9 +490,13 @@ onAuthStateChanged(auth, async user => {
     $('btnLogin').style.display = 'none';
     $('btnLogout').style.display = 'inline-block';
     
+    // Show all logged-in tabs
     $('nav-entry').style.display = 'inline-block';
     $('nav-report').style.display = 'inline-block';
     $('nav-admin').style.display = USER.role === 'Admin' ? 'inline-block' : 'none';
+    
+    // 🔥 FORCE SWITCH TO NEW ENTRY TAB AFTER LOGIN
+    document.querySelector('[data-tab="entry"]').click();
     
   } else {
     USER = null;
@@ -503,16 +504,18 @@ onAuthStateChanged(auth, async user => {
     $('btnLogin').style.display = 'inline-block';
     $('btnLogout').style.display = 'none';
     
+    // Hide restricted tabs
     $('nav-entry').style.display = 'none';
     $('nav-report').style.display = 'none';
     $('nav-admin').style.display = 'none';
     
-    const activeTab = document.querySelector('.tab.active');
-    if (activeTab && activeTab.dataset.tab !== 'list') {
-        document.querySelector('[data-tab="list"]').click();
-    }
+    // 🔥 FORCE SWITCH TO LIST TAB (SAP VIEW) AFTER LOGOUT
+    document.querySelector('[data-tab="list"]').click();
   }
   
+  // Re-render list to update the "Action" column visibility
+  if(typeof renderList === 'function') renderList();
+
   $('loadingOverlay').style.opacity = '0';
   setTimeout(() => $('loadingOverlay').style.display = 'none', 300);
   $('app').classList.remove('hidden');
@@ -649,8 +652,14 @@ function renderList() {
   const total = rows.reduce((s,e)=>s+e.qty,0);
   $('listCount').innerHTML = `Showing <b>${rows.length}</b> entries &nbsp;|&nbsp; Total Qty: <b>${total}</b>`;
   
+  const isLoggedIn = USER !== null;
+  const thAction = $('th-action');
+  if(thAction) thAction.style.display = isLoggedIn ? '' : 'none';
+
   $('listBody').innerHTML = rows.length ? rows.map((e,i) => {
+    // Can only delete if the creator UID matches the logged-in user
     const canDel = USER && e.creatorUid === USER.uid;
+    
     return `<tr>
       <td>${i+1}</td>
       <td><span class="badge">${esc(e.entryNo)}</span></td>
@@ -663,9 +672,11 @@ function renderList() {
       <td class="num">${e.qty}</td>
       <td>${esc(e.invoice)}</td>
       <td>${esc(e.creatorName)}</td>
-      <td>${canDel ? `<button class="btn-sm btn-danger" onclick="deleteEntry('${e.id}','${esc(e.entryNo)}','${esc(e.part)}',${e.qty},'${esc(e.invoice)}')">🗑</button>` : ''}</td>
+      <td style="display: ${isLoggedIn ? '' : 'none'}">
+        ${canDel ? `<button class="btn-sm btn-danger" onclick="deleteEntry('${e.id}','${esc(e.entryNo)}','${esc(e.part)}',${e.qty},'${esc(e.invoice)}')">🗑 Delete</button>` : ''}
+      </td>
     </tr>`;
-  }).join('') : `<tr><td colspan="12" class="empty">No entries found</td></tr>`;
+  }).join('') : `<tr><td colspan="${isLoggedIn ? 12 : 11}" class="empty">No entries found</td></tr>`;
 }
 window.renderList = renderList;
 
