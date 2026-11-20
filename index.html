@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gate Entry – Store (SAP Style)</title>
+<title>Gate Entry – SAP Dashboard</title>
+<!-- Excel Export Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{--blue:#2563eb;--green:#16a34a;--red:#dc2626;--slate:#1e293b;--muted:#64748b;--line:#e2e8f0;--bg:#eef2f7}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -13,24 +15,17 @@ button{font-family:inherit;cursor:pointer;border:none;border-radius:6px;font-siz
 button:active{transform:scale(.98)}
 input,select{font-family:inherit;font-size:12px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;outline:none;background:#fff;width:100%;color:var(--slate)}
 input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-input[readonly]{background:#f8fafc;color:var(--muted)}
-label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.03em}
+label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase}
 .muted{color:var(--muted)}.err{color:var(--red);font-size:12px;font-weight:600;margin-top:4px}
 .ok{color:var(--green);font-size:12px;font-weight:600;margin-top:4px}
-.warn{color:#d97706;font-size:12px;font-weight:600;margin-top:4px}
 
-/* LOGIN */
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e3a8a,#2563eb 60%,#0ea5e9);padding:20px}
-.login-card{background:#fff;padding:36px 32px;border-radius:18px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
-.login-card h1{font-size:22px;margin-bottom:4px}
-.login-card .sub{font-size:13px;color:var(--muted);margin-bottom:24px}
-.login-card label{margin-top:14px}
-.btn-primary{background:var(--blue);color:#fff;padding:10px 16px}.btn-primary:hover{background:#1d4ed8}
-.login-card .btn-primary{width:100%;margin-top:22px;padding:12px;font-size:14px}
-.hint{margin-top:18px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.6}
+/* SPINNER OVERLAY */
+#loadingOverlay{position:fixed;inset:0;background:rgba(255,255,255,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.3s}
+.spinner{width:50px;height:50px;border:5px solid #e2e8f0;border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* SHELL */
-.topbar{background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(30,58,138,.25)}
+.topbar{background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
 .brand{font-size:16px;font-weight:700;display:flex;align-items:center;gap:9px}
 .brand span{background:rgba(255,255,255,.18);padding:3px 9px;border-radius:20px;font-size:11px}
 .userbox{display:flex;align-items:center;gap:12px;font-size:13px}
@@ -42,7 +37,7 @@ label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bot
 main{padding:16px;max-width:1600px;margin:0 auto}
 .tabpane{display:none}.tabpane.active{display:block}
 .card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
-.card h2{font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:#1e293b}
+.card h2{font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue)}
 .grid{display:grid;gap:12px}
 .g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
@@ -56,7 +51,7 @@ main{padding:16px;max-width:1600px;margin:0 auto}
 .btn-outline{background:#fff;color:var(--slate);border:1px solid var(--line)}.btn-outline:hover{background:#f8fafc}
 
 /* SAP TABLE STYLE */
-.table-wrap{border:1px solid #cbd5e1;border-radius:4px;background:#fff;overflow-x:auto;overflow-y:auto;max-height:70vh}
+.table-wrap{border:1px solid #cbd5e1;border-radius:4px;background:#fff;overflow-x:auto;overflow-y:auto;max-height:65vh}
 table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
 thead th{position:sticky;top:0;background:#f1f5f9;z-index:2;text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;color:#334155;font-weight:700;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0}
 tbody td{padding:8px 10px;border-bottom:1px solid #e2e8f0;border-right:1px solid #f1f5f9;color:#1e293b}
@@ -86,36 +81,99 @@ tbody tr:last-child td{border-bottom:none}
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="loginScreen" class="login-wrap">
-  <div class="login-card">
-    <h1>🚚 Gate Entry</h1>
-    <div class="sub">Store Department – SAP Style</div>
-    <label>User ID / Email</label>
+<!-- LOADING SPINNER -->
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div style="margin-top:15px;font-weight:600;color:var(--blue)">Data Loading...</div>
+</div>
+
+<!-- LOGIN MODAL (Popup for writing/deleting) -->
+<div id="loginModal" class="modal hidden">
+  <div class="login-card modal-card">
+    <h3>Login Required</h3>
+    <p style="margin-bottom:12px">To add or delete entries, please login.</p>
+    <label>User ID</label>
     <input id="authUser" placeholder="e.g. admin" autocomplete="username">
-    <label>PIN (min 6 digits)</label>
+    <label style="margin-top:8px">PIN</label>
     <input id="authPin" type="password" inputmode="numeric" placeholder="••••••" autocomplete="current-password">
     <div id="authErr" class="err"></div>
-    <button class="btn-primary" onclick="login()">Login</button>
-    <div class="hint">Account admin से लें.<br>PIN भूल गए तो admin से reset करवाएँ.</div>
+    <div class="modal-actions" style="justify-content:space-between">
+      <button class="btn btn-ghost" onclick="closeLoginModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="login()">Login</button>
+    </div>
   </div>
 </div>
 
 <!-- APP -->
 <div id="app" class="hidden">
   <header class="topbar">
-    <div class="brand">🚚 Gate Entry <span>STORE</span></div>
-    <div class="userbox"><span id="whoami"></span><button class="btn-sm ghost" onclick="logout()">Logout</button></div>
+    <div class="brand">🚚 Gate Entry <span>SAP VIEW</span></div>
+    <div class="userbox">
+      <span id="whoami"></span>
+      <button class="btn-sm ghost" id="btnLogout" onclick="logout()" style="display:none">Logout</button>
+      <button class="btn-sm btn-primary" id="btnLogin" onclick="showLoginModal()">Login</button>
+    </div>
   </header>
+  
   <nav class="tabs">
-    <button class="tab active" data-tab="entry">➕ New Entry</button>
-    <button class="tab" data-tab="list">📋 Gate Entries (SAP View)</button>
+    <button class="tab active" data-tab="list">📋 Gate Entries (SAP)</button>
+    <button class="tab" data-tab="entry">➕ New Entry</button>
     <button class="tab" data-tab="report">📊 Reports</button>
     <button class="tab" data-tab="admin" id="adminTab" style="display:none">⚙️ Admin</button>
   </nav>
+  
   <main>
+    <!-- SAP LIST VIEW -->
+    <section id="tab-list" class="tabpane active">
+      <div class="card" style="padding:12px">
+        <div class="filterbar">
+          <div><label>Search Text</label><input id="fSearch" placeholder="Part/Inv/Vendor..." oninput="renderList()"></div>
+          <div>
+            <label>Material (Part)</label>
+            <select id="fPart" onchange="renderList()">
+                <option value="">All Materials</option>
+                <!-- Options loaded via JS -->
+            </select>
+          </div>
+          <div>
+            <label>Supplier (Vendor)</label>
+            <select id="fVendor" onchange="renderList()">
+                <option value="">All Suppliers</option>
+                <!-- Options loaded via JS -->
+            </select>
+          </div>
+          <div><label>From Date</label><input id="fFrom" type="date" onchange="renderList()"></div>
+          <div><label>From Time</label><input id="fFromTime" type="time" onchange="renderList()"></div>
+          <div><label>To Date</label><input id="fTo" type="date" onchange="renderList()"></div>
+          <div><label>To Time</label><input id="fToTime" type="time" onchange="renderList()"></div>
+          <button class="btn btn-ghost" onclick="resetListFilters()">↺ Reset</button>
+        </div>
+      </div>
+      
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:10px 14px;background:#f8fafc;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <span class="muted" style="font-weight:600" id="listCount"></span>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn-outline" onclick="copyTable()">📋 Copy Table</button>
+                <button class="btn btn-green" onclick="exportExcel()">⬇ Export to Excel</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+          <table id="sapTable">
+            <thead>
+              <tr>
+                <th>#</th><th>Entry No</th><th>Date</th><th>Time</th><th>Supplier (Code)</th><th>Name 1 (Vendor)</th>
+                <th>Material (Part)</th><th>Description</th><th class="num">Rcvd Qty</th><th>Delv Note (Invoice)</th><th>Entered By</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="listBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- ENTRY FORM -->
-    <section id="tab-entry" class="tabpane active">
+    <section id="tab-entry" class="tabpane">
       <div class="card">
         <h2><span class="dot"></span>Material Inward – New Entry</h2>
         <div class="grid g3">
@@ -135,79 +193,46 @@ tbody tr:last-child td{border-bottom:none}
       </div>
     </section>
 
-    <!-- SAP LIST VIEW -->
-    <section id="tab-list" class="tabpane">
-      <div class="card" style="padding:12px">
-        <div class="filterbar">
-          <div><label>Search Text</label><input id="fSearch" placeholder="Part/Inv/Vendor..." oninput="renderList()"></div>
-          <div><label>Part No</label><input id="fPart" list="dlParts" oninput="renderList()" autocomplete="off"></div>
-          <div><label>Vendor Code</label><input id="fVendor" list="dlVendors" oninput="renderList()" autocomplete="off"></div>
-          <div><label>From Date</label><input id="fFrom" type="date" onchange="renderList()"></div>
-          <div><label>From Time</label><input id="fFromTime" type="time" onchange="renderList()"></div>
-          <div><label>To Date</label><input id="fTo" type="date" onchange="renderList()"></div>
-          <div><label>To Time</label><input id="fToTime" type="time" onchange="renderList()"></div>
-          <button class="btn btn-ghost" onclick="resetListFilters()">↺ Reset</button>
-          <button class="btn btn-outline" onclick="exportEntries()">⬇ Export</button>
-        </div>
-      </div>
-      
-      <div class="card" style="padding:0;overflow:hidden">
-        <div style="padding:10px 14px;background:#f8fafc;border-bottom:1px solid var(--line);display:flex;justify-content:space-between">
-            <span class="muted" style="font-weight:600" id="listCount"></span>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th><th>Entry No</th><th>Date</th><th>Time</th><th>Part No</th><th>Description</th>
-                <th class="num">Qty</th><th>Invoice</th><th>Vendor Code</th><th>Vendor Name</th><th>Entered By</th><th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="listBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
     <!-- REPORTS -->
     <section id="tab-report" class="tabpane">
       <div class="card" style="padding:12px">
         <div class="filterbar">
-          <div><label>Part No</label><input id="rPart" list="dlParts" oninput="renderReport()" autocomplete="off"></div>
-          <div><label>Vendor Code</label><input id="rVendor" list="dlVendors" oninput="renderReport()" autocomplete="off"></div>
+          <div>
+            <label>Material (Part)</label>
+            <select id="rPart" onchange="renderReport()">
+                <option value="">All Materials</option>
+            </select>
+          </div>
+          <div>
+            <label>Supplier (Vendor)</label>
+            <select id="rVendor" onchange="renderReport()">
+                <option value="">All Suppliers</option>
+            </select>
+          </div>
           <div><label>From Date</label><input id="rFrom" type="date" onchange="renderReport()"></div>
           <div><label>From Time</label><input id="rFromTime" type="time" onchange="renderReport()"></div>
           <div><label>To Date</label><input id="rTo" type="date" onchange="renderReport()"></div>
           <div><label>To Time</label><input id="rToTime" type="time" onchange="renderReport()"></div>
-          <div><label>Entered By</label><select id="rUser" onchange="renderReport()"><option value="">All</option></select></div>
           <button class="btn btn-ghost" onclick="resetReportFilters()">↺ Reset</button>
-          <button class="btn btn-outline" onclick="exportReport()">⬇ Export</button>
+          <button class="btn btn-green" onclick="exportReportExcel()">⬇ Export Report</button>
         </div>
       </div>
       
-      <!-- Summary Tables -->
       <div class="grid g4" id="reportStats" style="margin-bottom:16px"></div>
       
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
           <div class="card" style="padding:0;overflow:hidden">
-            <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">By Part Number</h2>
+            <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">By Material (Part)</h2>
             <div class="table-wrap" style="max-height:300px;border:none;border-radius:0">
                 <table><thead><tr><th>Part No</th><th>Desc</th><th class="num">Qty</th><th class="num">Count</th></tr></thead><tbody id="repPartBody"></tbody></table>
             </div>
           </div>
           <div class="card" style="padding:0;overflow:hidden">
-            <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">By Vendor</h2>
+            <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">By Supplier (Vendor)</h2>
             <div class="table-wrap" style="max-height:300px;border:none;border-radius:0">
                 <table><thead><tr><th>Code</th><th>Name</th><th class="num">Qty</th><th class="num">Count</th></tr></thead><tbody id="repVendorBody"></tbody></table>
             </div>
           </div>
-      </div>
-
-      <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
-        <h2 style="padding:12px 14px;margin:0;background:#f8fafc;border-bottom:1px solid var(--line)">By Date</h2>
-        <div class="table-wrap" style="max-height:250px;border:none;border-radius:0">
-            <table><thead><tr><th>Date</th><th class="num">Qty</th><th class="num">Count</th></tr></thead><tbody id="repDateBody"></tbody></table>
-        </div>
       </div>
 
       <div class="card" style="padding:0;overflow:hidden">
@@ -247,11 +272,8 @@ tbody tr:last-child td{border-bottom:none}
 <script type="module">
 // ================= CONFIG =================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
-         createUserWithEmailAndPassword, updateProfile }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, onValue, push, set, remove, get }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, onValue, push, set, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDgOyMRYecNChefLvx_9ecHD5_nn2y4ai4",
@@ -281,16 +303,8 @@ const fmtDT = ts => { const d = new Date(ts); return `${pad(d.getDate())}-${pad(
 const fmtDate = ts => { const d = new Date(ts); return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`; };
 const fmtTime = ts => { const d = new Date(ts); return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; };
 
-// Start Time (00:00 if no time provided)
-function getStartTs(dateStr, timeStr) {
-    if (!dateStr) return null;
-    return new Date(`${dateStr}T${timeStr || '00:00'}:00`).getTime();
-}
-// End Time (23:59:59 if no time provided)
-function getEndTs(dateStr, timeStr) {
-    if (!dateStr) return null;
-    return new Date(`${dateStr}T${timeStr || '23:59'}:59`).getTime();
-}
+function getStartTs(dateStr, timeStr) { if (!dateStr) return null; return new Date(`${dateStr}T${timeStr || '00:00'}:00`).getTime(); }
+function getEndTs(dateStr, timeStr) { if (!dateStr) return null; return new Date(`${dateStr}T${timeStr || '23:59'}:59`).getTime(); }
 
 function toast(m, t='') { const e = document.createElement('div'); e.className='toast-item '+t; e.textContent=m; $('toast').appendChild(e); setTimeout(()=>{e.style.opacity=0;e.style.transition='.3s';setTimeout(()=>e.remove(),300)},2600); }
 
@@ -304,24 +318,29 @@ $('modalOk').onclick = () => { $('modal').classList.add('hidden'); if(modalResol
 function closeModal() { $('modal').classList.add('hidden'); if(modalResolve) modalResolve(false); modalResolve=null; }
 window.closeModal = closeModal;
 
-// ================= AUTH =================
+// ================= AUTH & UI =================
+function showLoginModal() { $('loginModal').classList.remove('hidden'); $('authUser').focus(); }
+function closeLoginModal() { $('loginModal').classList.add('hidden'); $('authErr').textContent=''; }
+window.showLoginModal = showLoginModal; window.closeLoginModal = closeLoginModal;
+
 async function login() {
   let u = $('authUser').value.trim().toLowerCase();
   const p = $('authPin').value;
   $('authErr').textContent='';
-  
-  if (!u || p.length < 6) { 
-    $('authErr').textContent='User ID/Email और 6+ digit PIN दोनों चाहिए'; 
-    return; 
-  }
-  
+  if (!u || p.length < 6) { $('authErr').textContent='User ID और 6+ digit PIN दोनों चाहिए'; return; }
   if (!u.includes('@')) u = u + EMAIL_DOMAIN;
   
-  try { await signInWithEmailAndPassword(auth, u, p); }
-  catch(e) { $('authErr').textContent='गलत User ID/Email या PIN'; }
+  try { 
+      await signInWithEmailAndPassword(auth, u, p); 
+      closeLoginModal();
+  } catch(e) { 
+      $('authErr').textContent='गलत User ID/Email या PIN'; 
+  }
 }
+window.login = login;
 
 async function logout() { await signOut(auth); }
+window.logout = logout;
 
 async function loadProfile(uid) {
   const snap = await get(ref(db, 'userProfiles/' + uid));
@@ -333,19 +352,33 @@ async function loadProfile(uid) {
 }
 
 onAuthStateChanged(auth, async user => {
-  if (!user) { USER=null; $('app').classList.add('hidden'); $('loginScreen').classList.remove('hidden'); return; }
-  const prof = await loadProfile(user.uid);
-  USER = { uid: user.uid, ...prof };
-  $('loginScreen').classList.add('hidden');
+  if (user) {
+    const prof = await loadProfile(user.uid);
+    USER = { uid: user.uid, ...prof };
+    $('whoami').innerHTML = `👤 <b>${esc(USER.name)}</b> <span class="badge" style="margin-left:6px">${esc(USER.role)}</span>`;
+    $('btnLogin').style.display = 'none';
+    $('btnLogout').style.display = 'inline-block';
+    $('adminTab').style.display = USER.role === 'Admin' ? '' : 'none';
+  } else {
+    USER = null;
+    $('whoami').innerHTML = `<span class="badge gray" style="background:#e2e8f0;color:#475569">Guest (View Only)</span>`;
+    $('btnLogin').style.display = 'inline-block';
+    $('btnLogout').style.display = 'none';
+    $('adminTab').style.display = 'none';
+    
+    // अगर गेस्ट है और एडमिन टैब खुला है, तो उसे बंद करके लिस्ट पर भेज दें
+    if ($('tab-admin').classList.contains('active')) {
+        document.querySelector('[data-tab="list"]').click();
+    }
+  }
+  
+  // Hide spinner once auth state is resolved
+  $('loadingOverlay').style.opacity = '0';
+  setTimeout(() => $('loadingOverlay').style.display = 'none', 300);
   $('app').classList.remove('hidden');
-  $('whoami').innerHTML = `👤 <b>${esc(USER.name)}</b> <span class="badge" style="margin-left:6px">${esc(USER.role)}</span>`;
-  $('adminTab').style.display = USER.role === 'Admin' ? '' : 'none';
-
-  await loadMaster();
-  attachRealtimeListeners();
 });
 
-// ================= MASTER CSV (Background Load only) =================
+// ================= MASTER CSV =================
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/).filter(l => l.trim() !== '');
   const headers = lines[0].split(',').map(h => h.trim());
@@ -364,8 +397,18 @@ async function loadMaster() {
     if (r.Partnumber && !PART_MAP[r.Partnumber]) PART_MAP[r.Partnumber]={desc:r.MaterialDescription,vendorCode:r.Vendorcode,vendorName:r.VendorName,fgname:r.fgname};
     if (r.Vendorcode && !VENDOR_MAP[r.Vendorcode]) VENDOR_MAP[r.Vendorcode]=r.VendorName;
   });
+  
+  // Fill datalists
   $('dlParts').innerHTML = Object.keys(PART_MAP).sort().map(p=>`<option value="${esc(p)}">${esc(PART_MAP[p].desc)}</option>`).join('');
   $('dlVendors').innerHTML = Object.keys(VENDOR_MAP).sort().map(v=>`<option value="${esc(v)}">${esc(VENDOR_MAP[v])}</option>`).join('');
+  
+  // Fill SAP style dropdowns
+  $('fPart').innerHTML = '<option value="">All Materials</option>' + Object.keys(PART_MAP).sort().map(p=>`<option value="${esc(p)}">${esc(p)} - ${esc(PART_MAP[p].desc)}</option>`).join('');
+  $('fVendor').innerHTML = '<option value="">All Suppliers</option>' + Object.keys(VENDOR_MAP).sort().map(v=>`<option value="${esc(v)}">${esc(v)} - ${esc(VENDOR_MAP[v])}</option>`).join('');
+  
+  // Fill Report dropdowns
+  $('rPart').innerHTML = $('fPart').innerHTML;
+  $('rVendor').innerHTML = $('fVendor').innerHTML;
 }
 
 // ================= REALTIME LISTENERS =================
@@ -388,7 +431,7 @@ function attachRealtimeListeners() {
   });
 }
 
-// ================= ENTRY AUTO-FILL =================
+// ================= ENTRY FORM AUTO-FILL =================
 $('ePart').addEventListener('input', () => {
   const pn = $('ePart').value.trim();
   if (!pn) { $('partMsg').innerHTML=''; $('eDesc').value=''; $('eDesc').readOnly=false; return; }
@@ -415,20 +458,24 @@ window.clearForm = clearForm;
 function makeEntryNo() { const d=new Date(); return `GE-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${Date.now().toString().slice(-6)}`; }
 
 async function saveEntry() {
+  if (!USER) { showLoginModal(); return; } // Block if not logged in
+  
   const msg=$('entryMsg'); msg.innerHTML='';
   const part=$('ePart').value.trim(), desc=$('eDesc').value.trim(), qty=parseInt($('eQty').value,10),
         invoice=$('eInvoice').value.trim(), vCode=$('eVendorCode').value.trim(), remarks=$('eRemarks').value.trim();
   let vName=$('eVendorName').value.trim();
+  
   if (!part) return msg.innerHTML='<div class="err">❌ Part required</div>';
   if (!desc) return msg.innerHTML='<div class="err">❌ Description required</div>';
   if (!qty||qty<=0) return msg.innerHTML='<div class="err">❌ Qty > 0</div>';
   if (!invoice) return msg.innerHTML='<div class="err">❌ Invoice required</div>';
   if (!vCode) return msg.innerHTML='<div class="err">❌ Vendor Code required</div>';
+  
   if (!vName && VENDOR_MAP[vCode]) vName = VENDOR_MAP[vCode];
   if (!vName) { vName = prompt(`Vendor code "${vCode}" master में नहीं.\nVendor Name डालें:`)?.trim(); if(!vName) return; }
 
   const dup = entriesCache.find(e => e.invoice===invoice && e.part===part && e.vendorCode===vCode);
-  if (dup) { const ok = await confirmModal('Duplicate', `Invoice ${invoice}+${part} पहले से है (${fmtDT(dup.createdAt)}).\nफिर भी save?`, 'Save'); if(!ok) return; }
+  if (dup) { const ok = await confirmModal('Duplicate', `Invoice ${invoice}+${part} पहले से है.\nफिर भी save?`, 'Save'); if(!ok) return; }
 
   const newRef = push(ref(db, 'entries'));
   try {
@@ -446,20 +493,16 @@ window.saveEntry = saveEntry;
 
 // ================= RENDER LIST (SAP STYLE) =================
 function getFilteredList() {
-  const s=$('fSearch').value.trim().toLowerCase(), p=$('fPart').value.trim().toLowerCase(),
-        v=$('fVendor').value.trim().toLowerCase();
-        
+  const s=$('fSearch').value.trim().toLowerCase(), p=$('fPart').value.trim(), v=$('fVendor').value.trim();
   const fromTs = getStartTs($('fFrom').value, $('fFromTime').value);
   const toTs = getEndTs($('fTo').value, $('fToTime').value);
 
   return entriesCache.filter(e => {
     if (s && !`${e.entryNo} ${e.part} ${e.description} ${e.invoice} ${e.vendorCode} ${e.vendorName} ${e.creatorName}`.toLowerCase().includes(s)) return false;
-    if (p && !e.part.toLowerCase().includes(p)) return false;
-    if (v && !`${e.vendorCode} ${e.vendorName}`.toLowerCase().includes(v)) return false;
-    
+    if (p && e.part !== p) return false; // Exact match for dropdown
+    if (v && e.vendorCode !== v) return false; // Exact match for dropdown
     if (fromTs && e.createdAt < fromTs) return false;
     if (toTs && e.createdAt > toTs) return false;
-    
     return true;
   });
 }
@@ -470,20 +513,20 @@ function renderList() {
   $('listCount').innerHTML = `Showing <b>${rows.length}</b> entries &nbsp;|&nbsp; Total Qty: <b>${total}</b>`;
   
   $('listBody').innerHTML = rows.length ? rows.map((e,i) => {
-    const canDel = e.creatorUid === USER.uid;
+    const canDel = USER && e.creatorUid === USER.uid;
     return `<tr>
       <td>${i+1}</td>
       <td><span class="badge">${esc(e.entryNo)}</span></td>
       <td>${fmtDate(e.createdAt)}</td>
       <td>${fmtTime(e.createdAt)}</td>
+      <td>${esc(e.vendorCode)}</td>
+      <td>${esc(e.vendorName)}</td>
       <td><b>${esc(e.part)}</b></td>
       <td>${esc(e.description)}</td>
       <td class="num">${e.qty}</td>
       <td>${esc(e.invoice)}</td>
-      <td>${esc(e.vendorCode)}</td>
-      <td>${esc(e.vendorName)}</td>
       <td>${esc(e.creatorName)}</td>
-      <td>${canDel ? `<button class="btn-sm btn-danger" onclick="deleteEntry('${e.id}','${esc(e.entryNo)}','${esc(e.part)}',${e.qty},'${esc(e.invoice)}')">🗑 Delete</button>` : '<span class="muted" style="font-size:11px">—</span>'}</td>
+      <td>${canDel ? `<button class="btn-sm btn-danger" onclick="deleteEntry('${e.id}','${esc(e.entryNo)}','${esc(e.part)}',${e.qty},'${esc(e.invoice)}')">🗑 Delete</button>` : ''}</td>
     </tr>`;
   }).join('') : `<tr><td colspan="12" class="empty">कोई एंट्री नहीं मिली</td></tr>`;
 }
@@ -495,8 +538,69 @@ function resetListFilters() {
 }
 window.resetListFilters = resetListFilters;
 
+// ================= COPY TABLE =================
+function copyTable() {
+    const rows = getFilteredList();
+    if (!rows.length) return toast('No data to copy', 'error');
+    
+    let text = "Supplier\tName 1\tMaterial\tDescription\tRcvd Qty\tDate\tTime\tSerial No (Inv)\tEntered By\n";
+    rows.forEach(e => {
+        text += `${e.vendorCode}\t${e.vendorName}\t${e.part}\t${e.description}\t${e.qty}\t${fmtDate(e.createdAt)}\t${fmtTime(e.createdAt)}\t${e.invoice}\t${e.creatorName}\n`;
+    });
+    
+    navigator.clipboard.writeText(text).then(() => {
+        toast('Table copied! Ready to paste in Excel/WhatsApp.', 'success');
+    }).catch(() => {
+        toast('Failed to copy. Please use Export Excel.', 'error');
+    });
+}
+window.copyTable = copyTable;
+
+// ================= EXCEL EXPORT =================
+function generateExcelData(rows, isReport = false) {
+    let ws_data = [];
+    if (!isReport) {
+        ws_data = [
+            ["Supplier", "Name 1", "Material", "Description", "Rcvd Qty", "Date", "Time", "Delv. Note", "Entered By"]
+        ];
+        rows.forEach(e => {
+            ws_data.push([e.vendorCode, e.vendorName, e.part, e.description, e.qty, fmtDate(e.createdAt), fmtTime(e.createdAt), e.invoice, e.creatorName]);
+        });
+        ws_data.push(["TOTAL", "", "", "", rows.reduce((s,e)=>s+e.qty,0), "", "", "", ""]);
+    }
+    
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    
+    // Column widths
+    ws['!cols'] = [
+        {wch: 12}, {wch: 25}, {wch: 15}, {wch: 25}, {wch: 10}, {wch: 12}, {wch: 10}, {wch: 15}, {wch: 15}
+    ];
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "GateEntryData");
+    
+    return XLSX.write(wb, {bookType:"xlsx", type:"array"});
+}
+
+function exportExcel() {
+    const rows = getFilteredList();
+    if (!rows.length) return toast('No data to export', 'error');
+    
+    const wbout = generateExcelData(rows);
+    const blob = new Blob([wbout], {type: "application/octet-stream"});
+    
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `GateEntry_SAP_${new Date().toISOString().slice(0,10)}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Excel downloaded ✔', 'success');
+}
+window.exportExcel = exportExcel;
+
 // ================= DELETE =================
 async function deleteEntry(id, entryNo, part, qty, invoice) {
+  if (!USER) { showLoginModal(); return; }
   const ok = await confirmModal('Delete', `Entry ${entryNo} (Part ${part}, Qty ${qty}) delete?`, 'Delete');
   if (!ok) return;
   try {
@@ -518,20 +622,15 @@ function fillReportUserDropdown() {
 }
 
 function getReportRows() {
-  const p=$('rPart').value.trim().toLowerCase(), v=$('rVendor').value.trim().toLowerCase(),
-        u=$('rUser').value;
-        
+  const p=$('rPart').value.trim(), v=$('rVendor').value.trim();
   const fromTs = getStartTs($('rFrom').value, $('rFromTime').value);
   const toTs = getEndTs($('rTo').value, $('rToTime').value);
 
   return entriesCache.filter(e => {
-    if (p && !e.part.toLowerCase().includes(p)) return false;
-    if (v && !`${e.vendorCode} ${e.vendorName}`.toLowerCase().includes(v)) return false;
-    if (u && e.creatorName !== u) return false;
-    
+    if (p && e.part !== p) return false;
+    if (v && e.vendorCode !== v) return false;
     if (fromTs && e.createdAt < fromTs) return false;
     if (toTs && e.createdAt > toTs) return false;
-    
     return true;
   });
 }
@@ -542,8 +641,8 @@ function renderReport() {
   $('reportStats').innerHTML = `
     <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">TOTAL ENTRIES</div><div style="font-size:22px;font-weight:800;color:var(--blue)">${rows.length}</div></div>
     <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">TOTAL QTY</div><div style="font-size:22px;font-weight:800;color:var(--green)">${total}</div></div>
-    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">UNIQUE PARTS</div><div style="font-size:22px;font-weight:800;color:#d97706">${new Set(rows.map(e=>e.part)).size}</div></div>
-    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">UNIQUE VENDORS</div><div style="font-size:22px;font-weight:800;color:#8b5cf6">${new Set(rows.map(e=>e.vendorCode)).size}</div></div>`;
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">UNIQUE MATERIALS</div><div style="font-size:22px;font-weight:800;color:#d97706">${new Set(rows.map(e=>e.part)).size}</div></div>
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">UNIQUE SUPPLIERS</div><div style="font-size:22px;font-weight:800;color:#8b5cf6">${new Set(rows.map(e=>e.vendorCode)).size}</div></div>`;
 
   const byPart = new Map();
   rows.forEach(e => { if(!byPart.has(e.part)) byPart.set(e.part,{desc:e.description,qty:0,c:0}); const o=byPart.get(e.part); o.qty+=e.qty; o.c++; });
@@ -552,10 +651,6 @@ function renderReport() {
   const byVen = new Map();
   rows.forEach(e => { if(!byVen.has(e.vendorCode)) byVen.set(e.vendorCode,{name:e.vendorName,qty:0,c:0}); const o=byVen.get(e.vendorCode); o.qty+=e.qty; o.c++; });
   $('repVendorBody').innerHTML = byVen.size ? [...byVen.entries()].sort((a,b)=>b[1].qty-a[1].qty).map(([k,o])=>`<tr><td><b>${esc(k)}</b></td><td>${esc(o.name)}</td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`).join('') : `<tr><td colspan="4" class="empty">No data</td></tr>`;
-
-  const byDate = new Map();
-  rows.forEach(e => { const k=fmtDate(e.createdAt); if(!byDate.has(k)) byDate.set(k,{qty:0,c:0}); const o=byDate.get(k); o.qty+=e.qty; o.c++; });
-  $('repDateBody').innerHTML = byDate.size ? [...byDate.entries()].sort((a,b)=>b[1].qty-a[1].qty).map(([d,o])=>`<tr><td><b>${d}</b></td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`).join('') : `<tr><td colspan="3" class="empty">No data</td></tr>`;
 
   renderAudit();
 }
@@ -567,33 +662,25 @@ function renderAudit() {
 
 function resetReportFilters() { 
     ['rPart','rVendor','rFrom','rFromTime','rTo','rToTime'].forEach(id=>$(id).value=''); 
-    $('rUser').value=''; 
     renderReport(); 
 }
 window.resetReportFilters = resetReportFilters;
 
-// ================= EXPORT CSV =================
-function downloadCSV(name, rows) {
-  const csv = rows.map(r => r.map(c => { const s=String(c??''); return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s; }).join(',')).join('\r\n');
-  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click();
-  URL.revokeObjectURL(a.href); toast('CSV downloaded', 'success');
+function exportReportExcel() {
+    const rows = getReportRows();
+    if (!rows.length) return toast('No data to export', 'error');
+    
+    const wbout = generateExcelData(rows, true);
+    const blob = new Blob([wbout], {type: "application/octet-stream"});
+    
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `GateEntry_Report_${new Date().toISOString().slice(0,10)}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Report downloaded ✔', 'success');
 }
-function exportEntries() {
-  const rows = getFilteredList(); if (!rows.length) return toast('No data', 'error');
-  const out = [['Entry No','Date','Time','Part','Desc','Qty','Invoice','Vendor Code','Vendor Name','By']];
-  rows.forEach(e => out.push([e.entryNo, fmtDate(e.createdAt), fmtTime(e.createdAt), e.part, e.description, e.qty, e.invoice, e.vendorCode, e.vendorName, e.creatorName]));
-  downloadCSV(`Entries_${new Date().toISOString().slice(0,10)}.csv`, out);
-}
-window.exportEntries = exportEntries;
-function exportReport() {
-  const rows = getReportRows(); if (!rows.length) return toast('No data', 'error');
-  const out = [['Entry No','Date','Time','Part','Desc','Qty','Invoice','Vendor Code','Vendor Name','By']];
-  rows.forEach(e => out.push([e.entryNo, fmtDate(e.createdAt), fmtTime(e.createdAt), e.part, e.description, e.qty, e.invoice, e.vendorCode, e.vendorName, e.creatorName]));
-  out.push(['TOTAL','','','','', rows.reduce((s,e)=>s+e.qty,0),'','','','']);
-  downloadCSV(`Report_${new Date().toISOString().slice(0,10)}.csv`, out);
-}
-window.exportReport = exportReport;
+window.exportReportExcel = exportReportExcel;
 
 // ================= ADMIN =================
 function renderUserList() {
@@ -632,6 +719,13 @@ window.adminAddUser = adminAddUser;
 // ================= TABS =================
 document.querySelectorAll('.tab').forEach(btn => {
   btn.addEventListener('click', () => {
+    if (btn.dataset.tab === 'entry' && !USER) {
+        toast('Please login to add entries', 'error');
+        showLoginModal();
+        return;
+    }
+    if (btn.dataset.tab === 'admin' && (!USER || USER.role !== 'Admin')) return;
+
     document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('.tabpane').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
@@ -642,7 +736,10 @@ document.querySelectorAll('.tab').forEach(btn => {
   });
 });
 
-window.login = login; window.logout = logout;
+// ================= INIT =================
+loadMaster().then(() => {
+    attachRealtimeListeners();
+});
 </script>
 </body>
 </html>
