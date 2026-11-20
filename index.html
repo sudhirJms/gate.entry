@@ -10,72 +10,83 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--slate);font-size:13px}
 .hidden{display:none!important}
-button{font-family:inherit;cursor:pointer;border:none;border-radius:6px;font-size:12px;font-weight:600;transition:.15s}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:6px;font-size:13px;font-weight:600;transition:.15s}
 button:active{transform:scale(.98)}
-input,select{font-family:inherit;font-size:12px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;outline:none;background:#fff;width:100%;color:var(--slate)}
+input,select{font-family:inherit;font-size:13px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;outline:none;background:#fff;width:100%;color:var(--slate)}
 input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase}
-.muted{color:var(--muted)}.err{color:var(--red);font-size:12px;font-weight:600;margin-top:4px}
-.ok{color:var(--green);font-size:12px;font-weight:600;margin-top:4px}
+label{font-size:11.5px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}
+.muted{color:var(--muted)}.err{color:var(--red);font-size:12px;font-weight:600;margin-top:6px}
+.ok{color:var(--green);font-size:12px;font-weight:600;margin-top:6px}
 
-/* SPINNER OVERLAY */
-#loadingOverlay{position:fixed;inset:0;background:rgba(255,255,255,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.3s}
+/* SPINNER */
+#loadingOverlay{position:fixed;inset:0;background:rgba(255,255,255,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.3s}
 .spinner{width:50px;height:50px;border:5px solid #e2e8f0;border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* SHELL */
-.topbar{background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:0 20px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-.brand{font-size:16px;font-weight:700;display:flex;align-items:center;gap:9px}
-.brand span{background:rgba(255,255,255,.18);padding:3px 9px;border-radius:20px;font-size:11px}
-.userbox{display:flex;align-items:center;gap:12px;font-size:13px}
-.btn-sm{padding:6px 12px;font-size:12px}
+.topbar{background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.brand span{background:rgba(255,255,255,.18);padding:3px 8px;border-radius:20px;font-size:11px}
+.userbox{display:flex;align-items:center;gap:10px;font-size:12px}
+.btn-sm{padding:7px 12px;font-size:12px;border-radius:6px}
 .ghost{background:rgba(255,255,255,.16);color:#fff}.ghost:hover{background:rgba(255,255,255,.28)}
-.tabs{display:flex;gap:4px;background:#fff;padding:0 16px;border-bottom:1px solid var(--line);position:sticky;top:54px;z-index:40;overflow-x:auto}
+.tabs{display:flex;gap:4px;background:#fff;padding:0 16px;border-bottom:1px solid var(--line);position:sticky;top:56px;z-index:40;overflow-x:auto}
 .tab{background:transparent;color:var(--muted);padding:14px 16px;border-radius:0;border-bottom:3px solid transparent;white-space:nowrap;font-size:13.5px}
 .tab:hover{color:var(--blue)}.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
-main{padding:16px;max-width:1600px;margin:0 auto}
+main{padding:14px;max-width:1600px;margin:0 auto}
 .tabpane{display:none}.tabpane.active{display:block}
 .card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
 .card h2{font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue)}
 .grid{display:grid;gap:12px}
-.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 
 /* BUTTONS */
-.btn{background:var(--blue);color:#fff;padding:9px 16px}.btn:hover{background:#1d4ed8}
+.btn{background:var(--blue);color:#fff;padding:10px 16px}.btn:hover{background:#1d4ed8}
 .btn-green{background:var(--green)}.btn-green:hover{background:#15803d}
 .btn-danger{background:var(--red)}.btn-danger:hover{background:#b91c1c}
 .btn-ghost{background:#f1f5f9;color:var(--slate)}.btn-ghost:hover{background:#e2e8f0}
 .btn-outline{background:#fff;color:var(--slate);border:1px solid var(--line)}.btn-outline:hover{background:#f8fafc}
 
-/* SAP TABLE STYLE */
+/* USER FRIENDLY FILTER BAR */
+.filterbar{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:#fff;padding:14px;border-radius:8px;border:1px solid var(--line);margin-bottom:14px}
+.f-group{display:flex;flex-direction:column;flex:1 1 140px}
+.f-group.search{flex:2 1 200px}
+.f-group.reset{flex:0 0 auto}
+.f-group.reset button{width:100%;height:40px;font-size:13px}
+/* Mobile view adjustments */
+@media(max-width:600px){
+    .f-group{flex:1 1 45%}
+    .f-group.search{flex:1 1 100%}
+}
+
+/* TABLE */
 .table-wrap{border:1px solid #cbd5e1;border-radius:4px;background:#fff;overflow-x:auto;overflow-y:auto;max-height:65vh}
-table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
-thead th{position:sticky;top:0;background:#f1f5f9;z-index:2;text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;color:#334155;font-weight:700;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0}
-tbody td{padding:8px 10px;border-bottom:1px solid #e2e8f0;border-right:1px solid #f1f5f9;color:#1e293b}
+table{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap}
+thead th{position:sticky;top:0;background:#f1f5f9;z-index:2;text-align:left;padding:10px 12px;font-size:11px;text-transform:uppercase;color:#334155;font-weight:700;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0}
+tbody td{padding:10px 12px;border-bottom:1px solid #e2e8f0;border-right:1px solid #f1f5f9;color:#1e293b}
 tbody tr:nth-child(even){background:#f8fafc}
 tbody tr:hover{background:#e0f2fe}
 tbody tr:last-child td{border-bottom:none}
 .num{text-align:right;font-variant-numeric:tabular-nums}
 .empty{padding:30px;text-align:center;color:var(--muted);font-size:13px}
-.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
+.badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
 .badge.red{background:#fee2e2;color:#b91c1c;border-color:#fecaca}
 
-/* FILTER BAR */
-.filterbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;align-items:end;margin-bottom:14px;background:#f8fafc;padding:12px;border-radius:8px;border:1px solid var(--line)}
-.filterbar .btn{height:34px;padding:0 12px}
-.filterbar label{font-size:10.5px}
+/* MODAL & LOGIN */
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.6);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal-card{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.modal-card h3{font-size:18px;margin-bottom:8px;text-align:center}
+.modal-card p{font-size:13px;color:var(--muted);line-height:1.6;text-align:center;margin-bottom:20px}
+.pin-wrap{position:relative}
+.pin-toggle{position:absolute;right:12px;top:12px;background:none;border:none;font-size:16px;cursor:pointer;color:var(--muted)}
+.modal-actions{display:flex;gap:10px;justify-content:space-between;margin-top:24px}
 
-/* MODAL & TOAST */
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
-.modal-card{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
-.modal-card h3{font-size:16px;margin-bottom:10px}
-.modal-card p{font-size:13px;color:var(--muted);line-height:1.6}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
 #toast{position:fixed;top:70px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px}
-.toast-item{background:#0f172a;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast-item{background:#0f172a;color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:slideIn 0.2s}
 .toast-item.success{background:#15803d}.toast-item.error{background:#b91c1c}
+@keyframes slideIn{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
 </style>
 </head>
 <body>
@@ -88,15 +99,21 @@ tbody tr:last-child td{border-bottom:none}
 
 <!-- LOGIN MODAL -->
 <div id="loginModal" class="modal hidden">
-  <div class="login-card modal-card">
+  <div class="modal-card">
     <h3>Login Required</h3>
-    <p style="margin-bottom:12px">To add or delete entries, please login.</p>
+    <p>To add or delete entries, please login with your PIN.</p>
     <label>User ID</label>
-    <input id="authUser" placeholder="e.g. admin" autocomplete="username" oninput="clearAuthError()">
-    <label style="margin-top:8px">PIN</label>
-    <input id="authPin" type="password" inputmode="numeric" placeholder="••••••" autocomplete="current-password" oninput="clearAuthError()">
-    <div id="authErr" class="err"></div>
-    <div class="modal-actions" style="justify-content:space-between;margin-top:20px">
+    <input id="authUser" placeholder="e.g. admin" autocomplete="username" oninput="clearAuthError()" style="margin-bottom:14px">
+    
+    <label>PIN</label>
+    <div class="pin-wrap">
+        <input id="authPin" type="password" inputmode="numeric" placeholder="••••••" autocomplete="current-password" oninput="clearAuthError()" onkeydown="if(event.key === 'Enter') login()">
+        <button class="pin-toggle" onclick="togglePin()" type="button">👁️</button>
+    </div>
+    
+    <div id="authErr" class="err" style="text-align:center"></div>
+    
+    <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeLoginModal()">Cancel</button>
       <button class="btn btn-primary" id="btnSubmitLogin" onclick="login()">Login</button>
     </div>
@@ -108,7 +125,7 @@ tbody tr:last-child td{border-bottom:none}
   <header class="topbar">
     <div class="brand">🚚 Gate Entry <span>SAP VIEW</span></div>
     <div class="userbox">
-      <span id="whoami"></span>
+      <span id="whoami" style="display:none"></span>
       <button class="btn-sm ghost" id="btnLogout" onclick="logout()" style="display:none">Logout</button>
       <button class="btn-sm btn-primary" id="btnLogin" onclick="showLoginModal()">Login</button>
     </div>
@@ -124,35 +141,53 @@ tbody tr:last-child td{border-bottom:none}
   <main>
     <!-- SAP LIST VIEW -->
     <section id="tab-list" class="tabpane active">
-      <div class="card" style="padding:12px">
-        <div class="filterbar">
-          <div><label>Search Text</label><input id="fSearch" placeholder="Part/Inv/Vendor..." oninput="renderList()"></div>
-          <div>
+      
+      <!-- RE-DESIGNED USER FRIENDLY FILTERS -->
+      <div class="filterbar">
+          <div class="f-group search">
+            <label>🔍 Search</label>
+            <input id="fSearch" placeholder="Part / Invoice / Vendor..." oninput="renderList()">
+          </div>
+          <div class="f-group">
             <label>Material (Part)</label>
             <select id="fPart" onchange="renderList()">
                 <option value="">All Materials</option>
             </select>
           </div>
-          <div>
+          <div class="f-group">
             <label>Supplier (Vendor)</label>
             <select id="fVendor" onchange="renderList()">
                 <option value="">All Suppliers</option>
             </select>
           </div>
-          <div><label>From Date</label><input id="fFrom" type="date" onchange="renderList()"></div>
-          <div><label>From Time</label><input id="fFromTime" type="time" onchange="renderList()"></div>
-          <div><label>To Date</label><input id="fTo" type="date" onchange="renderList()"></div>
-          <div><label>To Time</label><input id="fToTime" type="time" onchange="renderList()"></div>
-          <button class="btn btn-ghost" onclick="resetListFilters()">↺ Reset</button>
-        </div>
+          <div class="f-group">
+            <label>📅 From Date</label>
+            <input id="fFrom" type="date" onchange="renderList()">
+          </div>
+          <div class="f-group">
+            <label>⏰ From Time</label>
+            <input id="fFromTime" type="time" onchange="renderList()">
+          </div>
+          <div class="f-group">
+            <label>📅 To Date</label>
+            <input id="fTo" type="date" onchange="renderList()">
+          </div>
+          <div class="f-group">
+            <label>⏰ To Time</label>
+            <input id="fToTime" type="time" onchange="renderList()">
+          </div>
+          <div class="f-group reset">
+            <label style="opacity:0">Reset</label>
+            <button class="btn btn-ghost" onclick="resetListFilters()">↺ Reset</button>
+          </div>
       </div>
       
       <div class="card" style="padding:0;overflow:hidden">
-        <div style="padding:10px 14px;background:#f8fafc;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-            <span class="muted" style="font-weight:600" id="listCount"></span>
-            <div style="display:flex;gap:8px">
-                <button class="btn btn-outline" onclick="copyTable()">📋 Copy Table</button>
-                <button class="btn btn-green" onclick="exportExcel()">⬇ Export to Excel</button>
+        <div style="padding:12px 16px;background:#f8fafc;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <span class="muted" style="font-weight:600;font-size:13px" id="listCount"></span>
+            <div style="display:flex;gap:8px;width:100%;max-width:300px">
+                <button class="btn btn-outline" style="flex:1" onclick="copyTable()">📋 Copy</button>
+                <button class="btn btn-green" style="flex:1" onclick="exportExcel()">⬇ Excel</button>
             </div>
         </div>
         <div class="table-wrap">
@@ -181,9 +216,9 @@ tbody tr:last-child td{border-bottom:none}
           <div><label>Vendor Code *</label><input id="eVendorCode" list="dlVendors" placeholder="Type / select" autocomplete="off"><datalist id="dlVendors"></datalist></div>
           <div><label>Vendor Name</label><input id="eVendorName" placeholder="Auto-fill / Type manually"></div>
         </div>
-        <div style="margin-top:12px"><label>Remarks</label><input id="eRemarks" placeholder="Optional"></div>
+        <div style="margin-top:14px"><label>Remarks</label><input id="eRemarks" placeholder="Optional"></div>
         <div id="entryMsg"></div>
-        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
           <button class="btn btn-green" onclick="saveEntry()">✔ Save Gate Entry</button>
           <button class="btn btn-ghost" onclick="clearForm()">✖ Clear Form</button>
         </div>
@@ -192,29 +227,45 @@ tbody tr:last-child td{border-bottom:none}
 
     <!-- REPORTS -->
     <section id="tab-report" class="tabpane">
-      <div class="card" style="padding:12px">
-        <div class="filterbar">
-          <div>
+      <div class="filterbar">
+          <div class="f-group">
             <label>Material (Part)</label>
             <select id="rPart" onchange="renderReport()">
                 <option value="">All Materials</option>
             </select>
           </div>
-          <div>
+          <div class="f-group">
             <label>Supplier (Vendor)</label>
             <select id="rVendor" onchange="renderReport()">
                 <option value="">All Suppliers</option>
             </select>
           </div>
-          <div><label>From Date</label><input id="rFrom" type="date" onchange="renderReport()"></div>
-          <div><label>From Time</label><input id="rFromTime" type="time" onchange="renderReport()"></div>
-          <div><label>To Date</label><input id="rTo" type="date" onchange="renderReport()"></div>
-          <div><label>To Time</label><input id="rToTime" type="time" onchange="renderReport()"></div>
-          <button class="btn btn-ghost" onclick="resetReportFilters()">↺ Reset</button>
-          <button class="btn btn-green" onclick="exportReportExcel()">⬇ Export Report</button>
-        </div>
+          <div class="f-group">
+            <label>📅 From Date</label>
+            <input id="rFrom" type="date" onchange="renderReport()">
+          </div>
+          <div class="f-group">
+            <label>⏰ From Time</label>
+            <input id="rFromTime" type="time" onchange="renderReport()">
+          </div>
+          <div class="f-group">
+            <label>📅 To Date</label>
+            <input id="rTo" type="date" onchange="renderReport()">
+          </div>
+          <div class="f-group">
+            <label>⏰ To Time</label>
+            <input id="rToTime" type="time" onchange="renderReport()">
+          </div>
+          <div class="f-group reset">
+            <label style="opacity:0">Reset</label>
+            <button class="btn btn-ghost" onclick="resetReportFilters()">↺ Reset</button>
+          </div>
       </div>
       
+      <div style="text-align:right; margin-bottom:12px">
+          <button class="btn btn-green" onclick="exportReportExcel()">⬇ Export Report to Excel</button>
+      </div>
+
       <div class="grid g4" id="reportStats" style="margin-bottom:16px"></div>
       
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
@@ -291,7 +342,7 @@ const EMAIL_DOMAIN = "@gate.local";
 let USER = null;
 let PART_MAP = {}, VENDOR_MAP = {}, MASTER_ALL = [];
 let entriesCache = [], auditCache = [], usersCache = {};
-let lockTimerInterval = null;
+let lockTimer = null;
 
 // ================= HELPERS =================
 const $ = id => document.getElementById(id);
@@ -316,7 +367,17 @@ $('modalOk').onclick = () => { $('modal').classList.add('hidden'); if(modalResol
 function closeModal() { $('modal').classList.add('hidden'); if(modalResolve) modalResolve(false); modalResolve=null; }
 window.closeModal = closeModal;
 
-// ================= AUTH & UI (With Security Lockout) =================
+// ================= AUTH & UI =================
+function togglePin() {
+    const pinInput = $('authPin');
+    if (pinInput.type === 'password') {
+        pinInput.type = 'text';
+    } else {
+        pinInput.type = 'password';
+    }
+}
+window.togglePin = togglePin;
+
 function showLoginModal() { 
     $('loginModal').classList.remove('hidden'); 
     $('authUser').focus(); 
@@ -324,14 +385,34 @@ function showLoginModal() {
 function closeLoginModal() { 
     $('loginModal').classList.add('hidden'); 
     clearAuthError();
-    if(lockTimerInterval) clearInterval(lockTimerInterval);
+    if(lockTimer) clearInterval(lockTimer);
 }
 function clearAuthError() {
-    $('authErr').textContent='';
+    if(!lockTimer) $('authErr').textContent='';
 }
-
 window.showLoginModal = showLoginModal; 
 window.closeLoginModal = closeLoginModal;
+
+function startLockTimer(lockUntil) {
+    clearInterval(lockTimer);
+    $('btnSubmitLogin').disabled = true;
+    $('btnSubmitLogin').style.opacity = '0.5';
+    
+    lockTimer = setInterval(() => {
+        const left = lockUntil - Date.now();
+        if (left <= 0) {
+            clearInterval(lockTimer);
+            lockTimer = null;
+            $('authErr').textContent = '';
+            $('btnSubmitLogin').disabled = false;
+            $('btnSubmitLogin').style.opacity = '1';
+        } else {
+            const m = Math.floor(left / 60000);
+            const s = Math.floor((left % 60000) / 1000);
+            $('authErr').innerHTML = `❌ Account Locked! Try again in <b>${m}:${s.toString().padStart(2,'0')}</b>`;
+        }
+    }, 1000);
+}
 
 async function login() {
   let u = $('authUser').value.trim().toLowerCase();
@@ -349,8 +430,7 @@ async function login() {
   let attemptsData = attemptSnap.exists() ? attemptSnap.val() : { count: 0, lockUntil: 0 };
 
   if (attemptsData.lockUntil > Date.now()) {
-      const minsLeft = Math.ceil((attemptsData.lockUntil - Date.now()) / 60000);
-      $('authErr').textContent = `❌ अकाउंट लॉक है! ${minsLeft} मिनट बाद कोशिश करें।`;
+      startLockTimer(attemptsData.lockUntil);
       return;
   }
 
@@ -358,18 +438,16 @@ async function login() {
 
   try { 
       await signInWithEmailAndPassword(auth, email, p); 
-      // Success: Reset attempts
-      await remove(attemptRef);
+      await remove(attemptRef); // Success: Reset attempts
       closeLoginModal();
   } catch(e) { 
-      // Wrong Password
       let newCount = (attemptsData.count || 0) + 1;
       let lockUntil = 0;
       
       if (newCount >= 3) {
           lockUntil = Date.now() + 10 * 60 * 1000; // 10 mins
-          $('authErr').innerHTML = `❌ 3 बार गलत PIN! अकाउंट 10 मिनट के लिए लॉक हो गया है।`;
-          await set(attemptRef, { count: 0, lockUntil: lockUntil }); // Reset count but lock account
+          await set(attemptRef, { count: 0, lockUntil: lockUntil });
+          startLockTimer(lockUntil);
       } else {
           $('authErr').innerHTML = `❌ गलत PIN। ${3 - newCount} कोशिशें बची हैं।`;
           await set(attemptRef, { count: newCount, lockUntil: 0 });
@@ -394,7 +472,8 @@ onAuthStateChanged(auth, async user => {
   if (user) {
     const prof = await loadProfile(user.uid);
     USER = { uid: user.uid, ...prof };
-    $('whoami').innerHTML = `👤 <b>${esc(USER.name)}</b> <span class="badge" style="margin-left:6px">${esc(USER.role)}</span>`;
+    $('whoami').innerHTML = `👤 <b>${esc(USER.name)}</b>`;
+    $('whoami').style.display = 'inline-block';
     $('btnLogin').style.display = 'none';
     $('btnLogout').style.display = 'inline-block';
     
@@ -404,7 +483,7 @@ onAuthStateChanged(auth, async user => {
     
   } else {
     USER = null;
-    $('whoami').innerHTML = `<span class="badge gray" style="background:#e2e8f0;color:#475569">Guest (View Only)</span>`;
+    $('whoami').style.display = 'none';
     $('btnLogin').style.display = 'inline-block';
     $('btnLogout').style.display = 'none';
     
@@ -423,29 +502,352 @@ onAuthStateChanged(auth, async user => {
   $('app').classList.remove('hidden');
 });
 
-// Live countdown timer for lockout
-setInterval(async () => {
-    if ($('loginModal').classList.contains('hidden')) return;
-    let u = $('authUser').value.trim().toLowerCase();
-    if (!u) return;
-
-    const attemptSnap = await get(ref(db, 'loginAttempts/' + u));
-    if (attemptSnap.exists()) {
-        let data = attemptSnap.val();
-        if (data.lockUntil > Date.now()) {
-            const minsLeft = Math.ceil((data.lockUntil - Date.now()) / 60000);
-            $('authErr').innerHTML = `❌ अकाउंट लॉक है! ${minsLeft} मिनट बाद कोशिश करें।`;
-            $('btnSubmitLogin').disabled = true;
-            $('btnSubmitLogin').style.opacity = '0.5';
-        } else {
-            $('btnSubmitLogin').disabled = false;
-            $('btnSubmitLogin').style.opacity = '1';
-        }
-    } else {
-        $('btnSubmitLogin').disabled = false;
-        $('btnSubmitLogin').style.opacity = '1';
-    }
-}, 5000); // Check every 5 seconds if modal is open
-
 // ================= MASTER CSV =================
-// ... (rest of the code remains exactly the same)
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim() !== '');
+  const headers = lines[0].split(',').map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const v = []; let c='', q=false;
+    for (const ch of line){ if(ch==='"'){q=!q;continue} if(ch===','&&!q){v.push(c);c='';continue} c+=ch; }
+    v.push(c); const o={}; headers.forEach((h,i)=>o[h]=(v[i]||'').trim()); return o;
+  });
+}
+
+async function loadMaster() {
+  try { const r = await fetch('master.csv'); if(!r.ok) throw 0; MASTER_ALL = parseCSV(await r.text()); }
+  catch { MASTER_ALL = []; }
+  PART_MAP={}; VENDOR_MAP={};
+  MASTER_ALL.forEach(r => {
+    if (r.Partnumber && !PART_MAP[r.Partnumber]) PART_MAP[r.Partnumber]={desc:r.MaterialDescription,vendorCode:r.Vendorcode,vendorName:r.VendorName,fgname:r.fgname};
+    if (r.Vendorcode && !VENDOR_MAP[r.Vendorcode]) VENDOR_MAP[r.Vendorcode]=r.VendorName;
+  });
+  
+  $('dlParts').innerHTML = Object.keys(PART_MAP).sort().map(p=>`<option value="${esc(p)}">${esc(PART_MAP[p].desc)}</option>`).join('');
+  $('dlVendors').innerHTML = Object.keys(VENDOR_MAP).sort().map(v=>`<option value="${esc(v)}">${esc(VENDOR_MAP[v])}</option>`).join('');
+  
+  $('fPart').innerHTML = '<option value="">All Materials</option>' + Object.keys(PART_MAP).sort().map(p=>`<option value="${esc(p)}">${esc(p)} - ${esc(PART_MAP[p].desc)}</option>`).join('');
+  $('fVendor').innerHTML = '<option value="">All Suppliers</option>' + Object.keys(VENDOR_MAP).sort().map(v=>`<option value="${esc(v)}">${esc(v)} - ${esc(VENDOR_MAP[v])}</option>`).join('');
+  
+  $('rPart').innerHTML = $('fPart').innerHTML;
+  $('rVendor').innerHTML = $('fVendor').innerHTML;
+}
+
+// ================= REALTIME LISTENERS =================
+function attachRealtimeListeners() {
+  onValue(ref(db, 'entries'), snap => {
+    entriesCache = [];
+    snap.forEach(c => { entriesCache.push({ id: c.key, ...c.val() }); });
+    entriesCache.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+    renderList(); renderReport(); fillReportUserDropdown();
+  });
+  onValue(ref(db, 'auditLog'), snap => {
+    auditCache = [];
+    snap.forEach(c => auditCache.push({ id: c.key, ...c.val() }));
+    auditCache.sort((a,b) => (b.deletedAt||0) - (a.deletedAt||0));
+    renderAudit();
+  });
+  onValue(ref(db, 'userProfiles'), snap => {
+    usersCache = snap.val() || {};
+    renderUserList();
+  });
+}
+
+// ================= ENTRY FORM =================
+$('ePart').addEventListener('input', () => {
+  const pn = $('ePart').value.trim();
+  if (!pn) { $('partMsg').innerHTML=''; $('eDesc').value=''; $('eDesc').readOnly=false; return; }
+  if (PART_MAP[pn]) {
+    $('eDesc').value=PART_MAP[pn].desc; $('eDesc').readOnly=true;
+    $('partMsg').innerHTML=`<div class="ok">✔ ${esc(PART_MAP[pn].fgname||'')}</div>`;
+    if (PART_MAP[pn].vendorCode && !$('eVendorCode').value) { $('eVendorCode').value=PART_MAP[pn].vendorCode; $('eVendorName').value=PART_MAP[pn].vendorName||''; }
+  } else { $('eDesc').readOnly=false; $('partMsg').innerHTML='<div class="warn">⚠ Master में नहीं</div>'; }
+});
+
+$('eVendorCode').addEventListener('input', () => {
+  const vc = $('eVendorCode').value.trim();
+  if (VENDOR_MAP[vc]) $('eVendorName').value = VENDOR_MAP[vc];
+  else $('eVendorName').value = '';
+});
+
+function clearForm() {
+  ['ePart','eDesc','eQty','eInvoice','eVendorCode','eVendorName','eRemarks'].forEach(id=>{$(id).value='';$(id).readOnly=false;});
+  $('partMsg').innerHTML=''; $('entryMsg').innerHTML=''; $('ePart').focus();
+}
+window.clearForm = clearForm;
+
+// ================= SAVE ENTRY =================
+function makeEntryNo() { const d=new Date(); return `GE-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${Date.now().toString().slice(-6)}`; }
+
+async function saveEntry() {
+  if (!USER) { showLoginModal(); return; }
+  
+  const msg=$('entryMsg'); msg.innerHTML='';
+  const part=$('ePart').value.trim(), desc=$('eDesc').value.trim(), qty=parseInt($('eQty').value,10),
+        invoice=$('eInvoice').value.trim(), vCode=$('eVendorCode').value.trim(), remarks=$('eRemarks').value.trim();
+  let vName=$('eVendorName').value.trim();
+  
+  if (!part) return msg.innerHTML='<div class="err">❌ Part required</div>';
+  if (!desc) return msg.innerHTML='<div class="err">❌ Description required</div>';
+  if (!qty||qty<=0) return msg.innerHTML='<div class="err">❌ Qty > 0</div>';
+  if (!invoice) return msg.innerHTML='<div class="err">❌ Invoice required</div>';
+  if (!vCode) return msg.innerHTML='<div class="err">❌ Vendor Code required</div>';
+  
+  if (!vName && VENDOR_MAP[vCode]) vName = VENDOR_MAP[vCode];
+  if (!vName) { vName = prompt(`Vendor code "${vCode}" master में नहीं.\nVendor Name डालें:`)?.trim(); if(!vName) return; }
+
+  const dup = entriesCache.find(e => e.invoice===invoice && e.part===part && e.vendorCode===vCode);
+  if (dup) { const ok = await confirmModal('Duplicate', `Invoice ${invoice}+${part} पहले से है.\nफिर भी save?`, 'Save'); if(!ok) return; }
+
+  const newRef = push(ref(db, 'entries'));
+  try {
+    await set(newRef, {
+      entryNo: makeEntryNo(), creatorUid: USER.uid, creatorName: USER.name,
+      createdAt: Date.now(), part, description: desc, qty, invoice,
+      vendorCode: vCode, vendorName: vName, remarks
+    });
+    msg.innerHTML = `<div class="ok">✔ Saved</div>`;
+    toast('Entry saved ✔', 'success');
+    clearForm();
+  } catch(e) { msg.innerHTML = `<div class="err">❌ ${esc(e.message)}</div>`; }
+}
+window.saveEntry = saveEntry;
+
+// ================= RENDER LIST =================
+function getFilteredList() {
+  const s=$('fSearch').value.trim().toLowerCase(), p=$('fPart').value.trim(), v=$('fVendor').value.trim();
+  const fromTs = getStartTs($('fFrom').value, $('fFromTime').value);
+  const toTs = getEndTs($('fTo').value, $('fToTime').value);
+
+  return entriesCache.filter(e => {
+    if (s && !`${e.entryNo} ${e.part} ${e.description} ${e.invoice} ${e.vendorCode} ${e.vendorName} ${e.creatorName}`.toLowerCase().includes(s)) return false;
+    if (p && e.part !== p) return false;
+    if (v && e.vendorCode !== v) return false;
+    if (fromTs && e.createdAt < fromTs) return false;
+    if (toTs && e.createdAt > toTs) return false;
+    return true;
+  });
+}
+
+function renderList() {
+  const rows = getFilteredList();
+  const total = rows.reduce((s,e)=>s+e.qty,0);
+  $('listCount').innerHTML = `Showing <b>${rows.length}</b> entries &nbsp;|&nbsp; Total Qty: <b>${total}</b>`;
+  
+  $('listBody').innerHTML = rows.length ? rows.map((e,i) => {
+    const canDel = USER && e.creatorUid === USER.uid;
+    return `<tr>
+      <td>${i+1}</td>
+      <td><span class="badge">${esc(e.entryNo)}</span></td>
+      <td>${fmtDate(e.createdAt)}</td>
+      <td>${fmtTime(e.createdAt)}</td>
+      <td>${esc(e.vendorCode)}</td>
+      <td>${esc(e.vendorName)}</td>
+      <td><b>${esc(e.part)}</b></td>
+      <td>${esc(e.description)}</td>
+      <td class="num">${e.qty}</td>
+      <td>${esc(e.invoice)}</td>
+      <td>${esc(e.creatorName)}</td>
+      <td>${canDel ? `<button class="btn-sm btn-danger" onclick="deleteEntry('${e.id}','${esc(e.entryNo)}','${esc(e.part)}',${e.qty},'${esc(e.invoice)}')">🗑</button>` : ''}</td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="12" class="empty">कोई एंट्री नहीं मिली</td></tr>`;
+}
+window.renderList = renderList;
+
+function resetListFilters() { 
+    ['fSearch','fPart','fVendor','fFrom','fFromTime','fTo','fToTime'].forEach(id=>$(id).value=''); 
+    renderList(); 
+}
+window.resetListFilters = resetListFilters;
+
+// ================= COPY & EXCEL =================
+function copyTable() {
+    const rows = getFilteredList();
+    if (!rows.length) return toast('No data to copy', 'error');
+    
+    let text = "Supplier\tName 1\tMaterial\tDescription\tRcvd Qty\tDate\tTime\tSerial No (Inv)\tEntered By\n";
+    rows.forEach(e => {
+        text += `${e.vendorCode}\t${e.vendorName}\t${e.part}\t${e.description}\t${e.qty}\t${fmtDate(e.createdAt)}\t${fmtTime(e.createdAt)}\t${e.invoice}\t${e.creatorName}\n`;
+    });
+    
+    navigator.clipboard.writeText(text).then(() => {
+        toast('Table copied! Ready to paste in Excel/WhatsApp.', 'success');
+    }).catch(() => {
+        toast('Failed to copy. Please use Export Excel.', 'error');
+    });
+}
+window.copyTable = copyTable;
+
+function generateExcelData(rows, isReport = false) {
+    let ws_data = [];
+    if (!isReport) {
+        ws_data = [
+            ["Supplier", "Name 1", "Material", "Description", "Rcvd Qty", "Date", "Time", "Delv. Note", "Entered By"]
+        ];
+        rows.forEach(e => {
+            ws_data.push([e.vendorCode, e.vendorName, e.part, e.description, e.qty, fmtDate(e.createdAt), fmtTime(e.createdAt), e.invoice, e.creatorName]);
+        });
+        ws_data.push(["TOTAL", "", "", "", rows.reduce((s,e)=>s+e.qty,0), "", "", "", ""]);
+    }
+    
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    ws['!cols'] = [{wch: 12}, {wch: 25}, {wch: 15}, {wch: 25}, {wch: 10}, {wch: 12}, {wch: 10}, {wch: 15}, {wch: 15}];
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "GateEntryData");
+    return XLSX.write(wb, {bookType:"xlsx", type:"array"});
+}
+
+function exportExcel() {
+    const rows = getFilteredList();
+    if (!rows.length) return toast('No data to export', 'error');
+    const wbout = generateExcelData(rows);
+    const blob = new Blob([wbout], {type: "application/octet-stream"});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `GateEntry_SAP_${new Date().toISOString().slice(0,10)}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Excel downloaded ✔', 'success');
+}
+window.exportExcel = exportExcel;
+
+// ================= DELETE =================
+async function deleteEntry(id, entryNo, part, qty, invoice) {
+  if (!USER) { showLoginModal(); return; }
+  const ok = await confirmModal('Delete', `Entry ${entryNo} (Part ${part}, Qty ${qty}) delete?`, 'Delete');
+  if (!ok) return;
+  try {
+    await remove(ref(db, 'entries/' + id));
+    await set(push(ref(db, 'auditLog')), {
+      entryNo, part, qty, invoice, deletedBy: USER.name, deletedByUid: USER.uid, deletedAt: Date.now()
+    });
+    toast('Deleted ✔', 'success');
+  } catch(e) { toast('Delete fail: ' + e.message, 'error'); }
+}
+window.deleteEntry = deleteEntry;
+
+// ================= REPORTS =================
+function fillReportUserDropdown() {
+  const users = [...new Set(entriesCache.map(e=>e.creatorName))].sort();
+  const cur = $('rUser').value;
+  $('rUser').innerHTML = '<option value="">All</option>' + users.map(u=>`<option value="${esc(u)}">${esc(u)}</option>`).join('');
+  $('rUser').value = cur;
+}
+
+function getReportRows() {
+  const p=$('rPart').value.trim(), v=$('rVendor').value.trim();
+  const fromTs = getStartTs($('rFrom').value, $('rFromTime').value);
+  const toTs = getEndTs($('rTo').value, $('rToTime').value);
+
+  return entriesCache.filter(e => {
+    if (p && e.part !== p) return false;
+    if (v && e.vendorCode !== v) return false;
+    if (fromTs && e.createdAt < fromTs) return false;
+    if (toTs && e.createdAt > toTs) return false;
+    return true;
+  });
+}
+
+function renderReport() {
+  const rows = getReportRows();
+  const total = rows.reduce((s,e)=>s+e.qty,0);
+  $('reportStats').innerHTML = `
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">TOTAL ENTRIES</div><div style="font-size:22px;font-weight:800;color:var(--blue)">${rows.length}</div></div>
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">TOTAL QTY</div><div style="font-size:22px;font-weight:800;color:var(--green)">${total}</div></div>
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">UNIQUE MATERIALS</div><div style="font-size:22px;font-weight:800;color:#d97706">${new Set(rows.map(e=>e.part)).size}</div></div>
+    <div class="card" style="margin:0"><div class="muted" style="font-size:11px;font-weight:700">UNIQUE SUPPLIERS</div><div style="font-size:22px;font-weight:800;color:#8b5cf6">${new Set(rows.map(e=>e.vendorCode)).size}</div></div>`;
+
+  const byPart = new Map();
+  rows.forEach(e => { if(!byPart.has(e.part)) byPart.set(e.part,{desc:e.description,qty:0,c:0}); const o=byPart.get(e.part); o.qty+=e.qty; o.c++; });
+  $('repPartBody').innerHTML = byPart.size ? [...byPart.entries()].sort((a,b)=>b[1].qty-a[1].qty).map(([k,o])=>`<tr><td><b>${esc(k)}</b></td><td>${esc(o.desc)}</td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`).join('') : `<tr><td colspan="4" class="empty">No data</td></tr>`;
+
+  const byVen = new Map();
+  rows.forEach(e => { if(!byVen.has(e.vendorCode)) byVen.set(e.vendorCode,{name:e.vendorName,qty:0,c:0}); const o=byVen.get(e.vendorCode); o.qty+=e.qty; o.c++; });
+  $('repVendorBody').innerHTML = byVen.size ? [...byVen.entries()].sort((a,b)=>b[1].qty-a[1].qty).map(([k,o])=>`<tr><td><b>${esc(k)}</b></td><td>${esc(o.name)}</td><td class="num">${o.qty}</td><td class="num">${o.c}</td></tr>`).join('') : `<tr><td colspan="4" class="empty">No data</td></tr>`;
+
+  renderAudit();
+}
+window.renderReport = renderReport;
+
+function renderAudit() {
+  $('auditBody').innerHTML = auditCache.length ? auditCache.map(a=>`<tr><td>${fmtDT(a.deletedAt)}</td><td><span class="badge red">${esc(a.entryNo)}</span></td><td>${esc(a.part)}</td><td class="num">${a.qty}</td><td>${esc(a.invoice)}</td><td>${esc(a.deletedBy)}</td></tr>`).join('') : `<tr><td colspan="6" class="empty">No deletions</td></tr>`;
+}
+
+function resetReportFilters() { 
+    ['rPart','rVendor','rFrom','rFromTime','rTo','rToTime'].forEach(id=>$(id).value=''); 
+    renderReport(); 
+}
+window.resetReportFilters = resetReportFilters;
+
+function exportReportExcel() {
+    const rows = getReportRows();
+    if (!rows.length) return toast('No data to export', 'error');
+    const wbout = generateExcelData(rows, true);
+    const blob = new Blob([wbout], {type: "application/octet-stream"});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `GateEntry_Report_${new Date().toISOString().slice(0,10)}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Report downloaded ✔', 'success');
+}
+window.exportReportExcel = exportReportExcel;
+
+// ================= ADMIN =================
+function renderUserList() {
+  const rows = Object.entries(usersCache).map(([uid, p]) => ({ uid, ...p }));
+  $('userListBody').innerHTML = rows.length ? rows.map(u=>`<tr><td><b>${esc(u.userId||'')}</b></td><td>${esc(u.name||'')}</td><td><span class="badge">${esc(u.role||'Store')}</span></td></tr>`).join('') : `<tr><td colspan="3" class="empty">No users</td></tr>`;
+}
+
+async function adminAddUser() {
+  const uid = $('nuUser').value.trim().toLowerCase();
+  const pin = $('nuPin').value;
+  const name = $('nuName').value.trim() || uid;
+  const role = $('nuRole').value;
+  const msg = $('userMsg'); msg.innerHTML='';
+  if (!uid || pin.length < 6) { msg.innerHTML='<div class="err">User ID और 6+ PIN चाहिए</div>'; return; }
+  if (Object.values(usersCache).some(u => (u.userId||'').toLowerCase() === uid)) { msg.innerHTML='<div class="err">User ID already exists</div>'; return; }
+  const adminPass = prompt('Confirm करने के लिए अपना PIN डालें:');
+  if (!adminPass) return;
+  const adminEmail = auth.currentUser.email;
+  try {
+    await signOut(auth);
+    const cred = await createUserWithEmailAndPassword(auth, uid + EMAIL_DOMAIN, pin);
+    await updateProfile(cred.user, { displayName: name });
+    await set(ref(db, 'userProfiles/' + cred.user.uid), { name, role, userId: uid });
+    await signOut(auth);
+    await signInWithEmailAndPassword(auth, adminEmail, adminPass);
+    msg.innerHTML = `<div class="ok">✔ User "${uid}" created</div>`;
+    toast('User created', 'success');
+    $('nuUser').value=''; $('nuPin').value=''; $('nuName').value='';
+  } catch(e) {
+    msg.innerHTML = `<div class="err">❌ ${esc(e.message)}</div>`;
+    try { await signInWithEmailAndPassword(auth, adminEmail, adminPass); } catch {}
+  }
+}
+window.adminAddUser = adminAddUser;
+
+// ================= TABS =================
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.tab === 'entry' && !USER) { showLoginModal(); return; }
+    if (btn.dataset.tab === 'report' && !USER) { showLoginModal(); return; }
+    if (btn.dataset.tab === 'admin' && (!USER || USER.role !== 'Admin')) return;
+
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tabpane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    $('tab-'+btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab==='list') renderList();
+    if (btn.dataset.tab==='report') renderReport();
+    if (btn.dataset.tab==='admin') renderUserList();
+  });
+});
+
+// ================= INIT =================
+loadMaster().then(() => {
+    attachRealtimeListeners();
+});
+</script>
+</body>
+</html>
